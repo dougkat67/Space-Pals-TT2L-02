@@ -10,6 +10,13 @@ class Alien(pygame.sprite.Sprite):
         self.monster_select = 1
         self.load_images()
 
+        # self.stats
+        self.stats = {'happiness':50,'clearness':50 , 'satiety':50}
+        self.happy = self.stats['happiness']
+        self.clear = self.stats['clearness']
+        self.satiety = self.stats['satiety']
+
+
     def load_images(self):
         # Loading area
         monster_sprite1_img = pygame.image.load('images/monster_sprite1.png').convert_alpha()

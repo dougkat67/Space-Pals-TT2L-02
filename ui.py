@@ -1,7 +1,9 @@
 import pygame
+from setting import *
 
-class staus(pygame.sprite.Sprite):
+class UI:
     def __init__(self):
-
-        self.display.surface = pygame.display.get_surface()
-        self.font
+        pass
+    def display(self):
+        pass
+        
