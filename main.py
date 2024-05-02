@@ -43,6 +43,11 @@ class Game:
                     if self.button1.rect.collidepoint(event.pos):  #for button1
                         self.monster.monster_select = 2
                         self.last_button_click_time = current_time
+                        if self.ui.satiety >= self.ui.stats['satiety']:
+                            self.ui.health = self.ui.stats['satiety']
+                        else:
+                            self.ui.satiety += 10
+
 
             if self.monster.monster_select == 2 and current_time - self.last_button_click_time >= 3000:
                 self.monster.monster_select = 1

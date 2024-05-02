@@ -13,10 +13,10 @@ class UI:
         self.happy_bar_rect = pygame.Rect(10, 34, HAPPINESS_BAR_WIDTH, BAR_HEIGHT)
 
         # stats
-        self.stats = {'happiness':50, 'clearness':50, 'satiety':50}
+        self.stats = {'happiness':50, 'clearness':50, 'satiety':100}
         self.happy = self.stats['happiness']
         self.clear = self.stats['clearness']
-        self.satiety = self.stats['satiety']
+        self.satiety = self.stats['satiety'] * 0.5
     
     def show_bar(self, current, max_amount, bg_rect, color):
         pygame.draw.rect(self.display_surface, UI_BG_COLOR, bg_rect)
