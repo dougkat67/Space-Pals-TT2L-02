@@ -1,0 +1,1 @@
+self.button1 = button((SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4),self.visible_sprites)
