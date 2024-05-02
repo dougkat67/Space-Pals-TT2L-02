@@ -8,14 +8,7 @@ class Alien(pygame.sprite.Sprite):
         self.animation_timer = 0
         self.frame = 0
         self.monster_select = 1
-        self.load_images()
-
-        # self.stats
-        self.stats = {'happiness':50,'clearness':50 , 'satiety':50}
-        self.happy = self.stats['happiness']
-        self.clear = self.stats['clearness']
-        self.satiety = self.stats['satiety']
-
+        self.load_images()  # Call load_images method to load images
 
     def load_images(self):
         # Loading area
