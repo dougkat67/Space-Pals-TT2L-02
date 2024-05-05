@@ -1,77 +1,93 @@
 import pygame
-from menu import Mainmenu
+import time
+
 
 
 class Game():
     def __init__(self):
         pygame.init()
-        self.running, self.playing = True, False
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.running, self.playing = True, True
         self.DISPLAY_W, self.DISPLAY_H = 1000, 500
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
         self.font_name = pygame.font.SysFont("Pixeltype Regular", 50, False, False)
-        self.current_menu = Mainmenu(self)
-
-   
-    def game_loop(self, text1, text2):
+        self.actions = {"left": False, "right": False, "up": False, "down": False, "action1": False, "action2": False, "start": False}
+        self.dt, self.prev_time = 0, 0    #dt is delta time
+        self.state_stack = []
+        #self.load_assets()
+        
+    def game_loop(self):
         while self.playing:
-            self.check_events()
-            if self.START_KEY:
-                self.playing = False
-            self.display.fill((0,0,0))
-            self.draw_text(text1, text2, 200, 500, 25)  # Pass text arguments to draw_text method
-            self.window.blit(self.display, (0,0))
-            pygame.display.update()
-            self.reset_keys()
+            self.get_dt()
+            self.get_events()
+            self.update()
+            self.render()
 
-    def draw_text(self, text1, text2, x, y, size):
-        font = self.font_name
-        text_surface1 = font.render("You encountered an fascinating looking alien egg.", True, (255, 255, 255))
-        text_surface2 = font.render("It's hatching!", True, (255, 255, 255))
-        text_rect1 = text_surface1.get_rect()
-        text_rect2 = text_surface2.get_rect()
-        text_rect1.center = (x, y)
-        text_rect2.center = (x, y + 30)
-        self.display.blit(text_surface1, text_rect1)
-        self.display.blit(text_surface2, text_rect2)
-
-    #to break the game-loop
-    def check_events(self):
+    def get_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running, self.playing = False, False
-                self.current_menu.run_display = False
+                self.running = False
+                self.playing = False
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.running = False
+                    self.playing = False
+                if event.key == pygame.K_a:
+                    self.actions["left"] = True
+                if event.key == pygame.K_d:
+                    self.actions["right"] = True
+                if event.key == pygame.K_w:
+                    self.actions["up"] = True
+                if event.key == pygame.K_s:
+                    self.actions["down"] = True
+                if event.key == pygame.K_o:
+                    self.actions["action1"] = True
+                if event.key == pygame.K_p:
+                    self.actions["action2"] = True
                 if event.key == pygame.K_RETURN:
-                    self.START_KEY = True
-                if event.key == pygame.K_BACKSPACE:
-                    self.BACK_KEY = True
-                if event.key == pygame.K_DOWN:
-                    self.DOWN_KEY = True
-                if event.key == pygame.K_UP:
-                    self.UP_KEY = True
-            #now add a variable for when players are not pressing up, the variable should not be True
+                    self.actions["start"] = True
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_a:
+                    self.actions["left"] = False
+                if event.key == pygame.K_d:
+                    self.actions["right"] = False
+                if event.key == pygame.K_w:
+                    self.actions["up"] = False
+                if event.key == pygame.K_s:
+                    self.actions["down"] = False
+                if event.key == pygame.K_o:
+                    self.actions["action1"] = False
+                if event.key == pygame.K_p:
+                    self.actions["action2"] = False
+                if event.key == pygame.K_RETURN:
+                    self.actions["start"] = False
+
+    def update(self):
+        pass
+   
+    def render(self):
+        self.display.blit(self.display, (0,0))
+        pygame.display.flip()
+
+    def get_dt(self):
+        now = time.time()
+        self.dt = now - self.prev_time
+        self.prev_time = now
+
+    def draw_text(self, surface, text, color, x, y):
+        text_surface = self.font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.center = (x, y)
+        surface.blit = (text_surface, text_rect)
+
+    #did not add the OS function
 
     def reset_keys(self):
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
-
-
-    #self is the reference to the game, to have access to all the variables
-    # def draw_text(self, text1, text2, size, x, y):
-    #     font = self.font_name
-    #     text_surface1 = font.render(text1, True, (255, 255, 255))
-    #     text_surface2 = font.render(text2, True, (255, 255, 255))
-    #     text_rect1 = text_surface1.get_rect()
-    #     text_rect2 = text_surface2.get_rect()
-    #     text_rect1.center = (x, y)
-    #     text_rect2.center = (x, y + 30)  # Adjust the y-coordinate for the second line
-    
-    
-    # def draw_text(self, text, size, x, y ):
-    #     font = self.font_name
-    #     text_surface = font.render(text,True, (255,255,255))
-    #     text_rect = text_surface.get_rect()
-    #     text_rect.center = (x,y)
-    #     self.display.blit(text_surface,text_rect)
-    
+        for action in self.actions:
+            self.actions[action] = False
+   
+if __name__ == "__main__":
+    g = Game()
+    while g.running:
+        g.game_loop()
