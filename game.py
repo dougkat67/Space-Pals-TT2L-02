@@ -1,6 +1,6 @@
 import pygame
 import time
-
+from states.menu import Menu
 
 
 class Game():
