@@ -15,6 +15,7 @@ class Game():
         self.dt, self.prev_time = 0, 0    #dt is delta time
         self.state_stack = []
         #self.load_assets()
+        self.load_states()
         
     def game_loop(self):
         while self.playing:
@@ -64,10 +65,11 @@ class Game():
                     self.actions["start"] = False
 
     def update(self):
-        pass
+        self.state_stack[-1].update(self.dt, self.actions)
    
     def render(self):
-        self.display.blit(self.display, (0,0))
+        self.state_stack[-1].render(self.display, self.font_name)
+        self.window.blit(self.display, (0,0))
         pygame.display.flip()
 
     def get_dt(self):
@@ -75,11 +77,17 @@ class Game():
         self.dt = now - self.prev_time
         self.prev_time = now
 
-    def draw_text(self, surface, text, color, x, y):
-        text_surface = self.font.render(text, True, color)
+    def draw_text(self, surface, text, color, x, y, font):
+        #font = self.font_name
+        text_surface = font.render(text, True, color)
+        #text_surface.set_colorkey((0,0,0))
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
-        surface.blit = (text_surface, text_rect)
+        surface.blit(text_surface, text_rect)
+
+    def load_states(self):
+        self.menu_screen = Menu(self)
+        self.state_stack.append(self.menu_screen)
 
     #did not add the OS function
 
