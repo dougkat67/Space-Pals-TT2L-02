@@ -3,7 +3,8 @@ import sys
 import pyelement
 from math import floor
 from alien import Alien
-from button import Button
+from button import Button1
+from button2 import Button2
 from setting import *
 from ui import UI
 
@@ -25,7 +26,8 @@ class Game:
 
         #build the sprite
         self.monster = Alien((400,350))
-        self.button1 = Button((110,410),self.visible_sprites)
+        self.button1 = Button1((110,410),self.visible_sprites)
+        self.button2 = Button2((110,410),self.visible_sprites)
 
         #Ui
         self.ui = UI()
@@ -47,6 +49,10 @@ class Game:
                             self.ui.health = self.ui.stats['satiety']
                         else:
                             self.ui.satiety += 10
+                    
+                    if self.button2.rect.collidepoint(event.pos): #for button2
+                        self.monster.monster_select = 3
+                        self.last_button_click_time = current_time
 
 
             if self.monster.monster_select == 2 and current_time - self.last_button_click_time >= 3000:

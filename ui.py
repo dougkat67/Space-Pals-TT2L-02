@@ -11,11 +11,12 @@ class UI:
         # bar setup
         self.satiety_bar_rect = pygame.Rect(10, 10, FEEDING_BAR_WIDTH, BAR_HEIGHT)
         self.happy_bar_rect = pygame.Rect(10, 34, HAPPINESS_BAR_WIDTH, BAR_HEIGHT)
+        self.clear_bar_rect = pygame.Rect(10, 54, HAPPINESS_BAR_WIDTH, BAR_HEIGHT)
 
         # stats
-        self.stats = {'happiness':50, 'clearness':50, 'satiety':100}
-        self.happy = self.stats['happiness']
-        self.clear = self.stats['clearness']
+        self.stats = {'happiness':100, 'clearness':100, 'satiety':100}
+        self.happy = self.stats['happiness'] * 0.5
+        self.clear = self.stats['clearness'] * 0.5
         self.satiety = self.stats['satiety'] * 0.5
     
     def show_bar(self, current, max_amount, bg_rect, color):
@@ -32,4 +33,6 @@ class UI:
                 
     def display(self, ): # display ui on screen
         self.show_bar(self.satiety, self.stats['satiety'], self.satiety_bar_rect, SATIETY_COLOR)
+        self.show_bar(self.happy, self.stats['happiness'], self.happy_bar_rect, HAPPY_COLOR)
+        self.show_bar(self.clear, self.stats['clearness'], self.clear_bar_rect, CLEAR_COLOR)
         

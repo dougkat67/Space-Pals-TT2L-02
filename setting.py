@@ -17,6 +17,7 @@ TEXT_COLOR = '#EEEEEE'
 #ui colors 
 SATIETY_COLOR = 'red'
 HAPPY_COLOR = 'blue'
+CLEAR_COLOR = 'green'
 UI_BORDER_COLOR_ACTIVE = 'gold'
 
 #SCREEN
