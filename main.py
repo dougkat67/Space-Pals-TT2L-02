@@ -6,7 +6,6 @@ class MainMenuState:
     def __init__(self, game):
         self.game = game
         self.running = True
-        pygame.freetype.height
         
 
     def handle_events(self):

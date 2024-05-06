@@ -2,7 +2,7 @@ import pygame
 import sys
 
 class AlienAnimation:
-    def __init__(self):
+    def __init__(self, screen):
         pygame.init()
         self.SCREEN_WIDTH = 1000
         self.SCREEN_HEIGHT = 500

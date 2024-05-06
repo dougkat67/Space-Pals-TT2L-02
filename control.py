@@ -14,9 +14,9 @@ pygame.display.set_caption('minigame')
 
 # create instances of screens
 screen1 = Screen1(screen)
-screen2 = AlienAnimation(screen)
+alien_animation = AlienAnimation(screen) # pass screen object here
 
-# Variable to keep track of which screen to display
+# set the initial screen
 current_screen = screen1
 
 # Main game loop
@@ -29,12 +29,17 @@ while running:
             if event.key == pygame.K_SPACE:
                 # switch to the next screen
                 if current_screen == screen1:
-                    current_screen = screen2
+                    current_screen = alien_animation
+                    alien_animation.run() # call the run method to start the animation loop
                 else:
-                    current_screen = screen2
+                    current_screen = screen1
 
-    # update current screen
-    current_screen.update()
+    # check the current screen type and update accordingly
+    if current_screen == screen1 :
+        screen1.update()
+    elif current_screen == alien_animation:
+        # no need to call update for AlienAnimation science it has its own animation loop
+        pass
 
     # refresh screen
     pygame.display.update()
