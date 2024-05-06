@@ -15,7 +15,7 @@ class UI:
 
         # stats
         self.stats = {'happiness':100, 'clearness':100, 'satiety':100}
-        self.happy = self.stats['happiness'] * 0.5
+        self.happy = self.stats['happiness'] * 0.7
         self.clear = self.stats['clearness'] * 0.5
         self.satiety = self.stats['satiety'] * 0.5
     

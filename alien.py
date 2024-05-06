@@ -18,8 +18,8 @@ class Alien(pygame.sprite.Sprite):
         monster_sprite4_img = pygame.image.load('images/monster_sprite4.png').convert_alpha()
         self.monster_sprite1 = pyelement.SpriteSheet(monster_sprite1_img)
         self.monster_sprite2 = pyelement.SpriteSheet(monster_sprite2_img)
-        self.monster_select3 = pyelement.SpriteSheet(monster_sprite3_img)
-        self.monster_select3 = pyelement.SpriteSheet(monster_sprite4_img)
+        self.monster_sprite3 = pyelement.SpriteSheet(monster_sprite3_img)
+        self.monster_sprite4 = pyelement.SpriteSheet(monster_sprite4_img)
 
     def update(self, screen):
         # Animation
@@ -40,11 +40,11 @@ class Alien(pygame.sprite.Sprite):
             animation = pygame.transform.scale(animation, (330, 330)).convert_alpha()
             screen.blit(animation, (230, 220))
         elif self.monster_select == 3:
-            animation = self.monster_sprite2.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
+            animation = self.monster_sprite3.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
             animation = pygame.transform.scale(animation, (330, 330)).convert_alpha()
             screen.blit(animation, (230, 220))
         elif self.monster_select == 4:
-            animation = self.monster_sprite2.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
+            animation = self.monster_sprite4.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
             animation = pygame.transform.scale(animation, (330, 330)).convert_alpha()
             screen.blit(animation, (230, 220))
         

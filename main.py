@@ -5,6 +5,7 @@ from math import floor
 from alien import Alien
 from button import Button1
 from button2 import Button2
+from button3 import Button3
 from setting import *
 from ui import UI
 
@@ -26,8 +27,9 @@ class Game:
 
         #build the sprite
         self.monster = Alien((400,350))
-        self.button1 = Button1((110,410),self.visible_sprites)
-        self.button2 = Button2((110,410),self.visible_sprites)
+        self.button1 = Button1((110,350),self.visible_sprites)
+        self.button2 = Button2((110,350),self.visible_sprites)
+        self.button3 = Button3((110,350),self.visible_sprites)
 
         #Ui
         self.ui = UI()
@@ -50,12 +52,28 @@ class Game:
                         else:
                             self.ui.satiety += 10
                     
-                    if self.button2.rect.collidepoint(event.pos): #for button2
+                    elif self.button2.rect.collidepoint(event.pos): #for button2
                         self.monster.monster_select = 3
                         self.last_button_click_time = current_time
+                        if self.ui.clear >= self.ui.stats['clearness']:
+                            self.ui.clear = self.ui.stats['clearness']
+                        else :
+                            self.ui.clear += 10
+
+                    elif self.button3.rect.collidepoint(event.pos): #for button3
+                        self.monster.monster_select = 4
+                        self.last_button_click_time = current_time
+                        if self.ui.happy >= self.ui.stats['happiness']:
+                            self.ui.happy = self.ui.stats['happiness']
+                        else :
+                            self.ui.happy += 10
 
 
             if self.monster.monster_select == 2 and current_time - self.last_button_click_time >= 3000:
+                self.monster.monster_select = 1
+            if self.monster.monster_select == 3 and current_time - self.last_button_click_time >= 3000:
+                self.monster.monster_select = 1
+            if self.monster.monster_select == 4 and current_time - self.last_button_click_time >= 3000:
                 self.monster.monster_select = 1
 
             
