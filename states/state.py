@@ -3,7 +3,7 @@ class State():                    #now as an abstract base class; also will be u
         self.game = game
         self.prev_state = None
 
-    def update(self, deltatime, player_action):
+    def update(self, deltatime, actions):
         pass
 
     def render(self, surface):
