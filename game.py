@@ -89,8 +89,6 @@ class Game():
         self.menu_screen = Menu(self)
         self.state_stack.append(self.menu_screen)
 
-    #did not add the OS function
-
     def reset_keys(self):
         for action in self.actions:
             self.actions[action] = False
