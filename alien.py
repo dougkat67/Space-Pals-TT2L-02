@@ -34,7 +34,7 @@ class Alien(pygame.sprite.Sprite):
         if self.monster_select == 1:
             animation = self.monster_sprite1.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
             animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            screen.blit(animation, (270, 250)) # position
         elif self.monster_select == 2:
             animation = self.monster_sprite2.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
             animation = pygame.transform.scale(animation, (330, 330)).convert_alpha()
