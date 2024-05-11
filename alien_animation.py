@@ -31,6 +31,8 @@ class AlienAnimation:
         self.FPS = 60
         self.FPSCLOCK = pygame.time.Clock()
 
+        self.scaling_factor = 0.5
+
         # add an animation frame counter
         self.frame_counter = 0
 
@@ -52,12 +54,9 @@ class AlienAnimation:
             # Get the original dimensions of the player image
             original_width, original_height = self.playerImg.get_size()
 
-            # Define the scaling factor
-            scaling_factor = 0.35  # Adjust this value as needed
-
             # Calculate the scaled width and height
-            scaled_width = int(original_width * scaling_factor)
-            scaled_height = int(original_height * scaling_factor)
+            scaled_width = int(original_width * self.scaling_factor)
+            scaled_height = int(original_height * self.scaling_factor)
 
             # Scale the player image
             scaled_playerImg = pygame.transform.scale(self.playerImg, (scaled_width, scaled_height))
@@ -71,7 +70,3 @@ class AlienAnimation:
 
             pygame.display.flip()
             self.FPSCLOCK.tick(self.FPS)
-
-if __name__ == "__main__":
-    game = AlienAnimation()
-    game.run()
