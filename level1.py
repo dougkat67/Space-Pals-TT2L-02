@@ -54,26 +54,26 @@ clock = pygame.time.Clock()
 walls = [] # list to hold the walls
 
 # holds the level layout in a list of strings
+# use 20walls/row, 10walls/column
 level = [
-    "WWWWWWWWWWWWWWWWWWWWWWWWWW",
-    "W                        W",
-    "W                        W",
-    "WWW    WWWWWWWWWWWWWWWWWWW",
-    "WWW    WWWWWWWWWWWWWWWWWWW",
-    "WWW    WWWWWWWWWWWWWWWWWWW",
-    "WWW    WWWWWWWWWWWWWWWWWWW",
-    "WWW    WWWWWWWWWWWWWWWWWWW",
-    "WWW    WWWWWWWWWWWWWWWWWWW",
-    "WWW    WWWWWWWWWWWWWWWWWWW",
-    "WWW                      W",
-    "WWW                     EW",
-    "WWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWWWW",
+    "W                  W",
+    "W                  W",
+    "WWW    WWWWWWWWWWWWW",
+    "WWW    WWWWWWWWWWWWW",
+    "WWW    WWWWWWWWWWWWW",
+    "WWW    WWWWWWWWWWWWW",
+    "WWW                W",
+    "WWW               EW",
+    "WWWWWWWWWWWWWWWWWWWW",
 ]
 
 # Calculate the size of each grid cell based on the screen dimensions and number of cells
 num_cols = len(level[0])
 num_rows = len(level)
-grid_cell_size = min(screen_width // num_cols, screen_height // num_rows)
+grid_cell_size = 50
+screen_width = num_cols * grid_cell_size
+screen_height = num_rows * grid_cell_size
 
 # Parse the level string above. W = wall, E = exit
 for y, row in enumerate(level):
@@ -105,23 +105,20 @@ while running:
             elif pressed_keys[pygame.K_s]:
                 player.move(0, 1)   # Move down
 
-    # fill the screen with black
-    screen.fill((0, 0, 0))
-
-    # draw the walls
-    for wall in walls:
-        pygame.draw.rect(screen, (255, 255, 255), wall.rect)
-
-    # draw the exit
-    pygame.draw.rect(screen, (255, 165, 0), end_rect)
-
-    # draw the player
-    pygame.draw.rect(screen, (0, 0, 255), player.rect)
-
     # check for collision with the exit
     if player.rect.colliderect(end_rect):
         print("You win!")
         running = False
+
+    # fill the screen with black
+    screen.fill((0, 0, 0))
+    # draw the walls
+    for wall in walls:
+        pygame.draw.rect(screen, (255, 255, 255), wall.rect)
+    # draw the exit
+    pygame.draw.rect(screen, (255, 165, 0), end_rect)
+    # draw the player
+    pygame.draw.rect(screen, (0, 0, 255), player.rect)
 
     # update the display
     pygame.display.flip()
