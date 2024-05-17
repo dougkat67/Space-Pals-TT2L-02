@@ -35,4 +35,10 @@ class UI:
         self.show_bar(self.feeding, self.stats['feeding'], self.satiety_bar_rect, SATIETY_COLOR)
         self.show_bar(self.happy, self.stats['happiness'], self.happy_bar_rect, HAPPY_COLOR)
         self.show_bar(self.cleanliness, self.stats['cleanliness'], self.clear_bar_rect, CLEAR_COLOR)
+
+    def update(self, deltatime, player_action):
+        pass
+
+    def render(self, display):
+        pass
         

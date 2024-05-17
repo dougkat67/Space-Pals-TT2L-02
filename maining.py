@@ -1,22 +1,18 @@
 import pygame
 import sys
 from setting import SCREEN_WIDTH, SCREEN_HEIGHT
-from switchscreen import Switch
+from level import Game
 
 class Play:
     def __init__(self):
         pygame.init()
-        
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption('Pet Game')
         self.clock = pygame.time.Clock()
-
-        self.switch = Switch()
+        self.game = Game()
 
     def run(self):
-        while True:
-            self.switch.run()
-
+        self.game.run()
 
 if __name__ == "__main__":
     game = Play()
