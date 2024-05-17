@@ -38,6 +38,9 @@ class Game():
         self.start_time = pygame.time.get_ticks()
         self.screen_width = SCREEN_WIDTH
 
+        # Day
+        self.day = 1
+
         if os.path.exists("leaderboard.json"):
             with open("leaderboard.json", "r") as file:
                 self.leaderboard = json.load(file)
@@ -51,28 +54,21 @@ class Game():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:  
+                elif event.type == pygame.MOUSEBUTTONDOWN:
                     if self.button1.rect.collidepoint(event.pos):
-                        self.monster.monster_select = 2
+                        self.monster.monster_select = 2 if self.monster.monster_select < 5 else 6 if  self.monster.monster_select < 9 else 10
                         self.last_button_click_time = current_time
-                        if self.ui.feeding >= self.ui.stats['feeding']:
-                            self.ui.feeding = self.ui.stats['feeding']
-                        else:
-                            self.ui.feeding += 10
+                        self.ui.feeding = min(self.ui.feeding + 10, self.ui.stats['feeding'])
+
                     elif self.button2.rect.collidepoint(event.pos):
-                        self.monster.monster_select = 3
+                        self.monster.monster_select = 3 if self.monster.monster_select < 5 else 7 if  self.monster.monster_select < 9 else 11
                         self.last_button_click_time = current_time
-                        if self.ui.cleanliness >= self.ui.stats['cleanliness']:
-                            self.ui.cleanliness = self.ui.stats['cleanliness']
-                        else :
-                            self.ui.cleanliness += 10
+                        self.ui.cleanliness = min(self.ui.cleanliness + 10, self.ui.stats['cleanliness'])
+
                     elif self.button3.rect.collidepoint(event.pos):
-                        self.monster.monster_select = 4
+                        self.monster.monster_select = 4 if self.monster.monster_select < 5 else 8 if  self.monster.monster_select < 9 else 12
                         self.last_button_click_time = current_time
-                        if self.ui.happy >= self.ui.stats['happiness']:
-                            self.ui.happy = self.ui.stats['happiness']
-                        else :
-                            self.ui.happy += 10
+                        self.ui.happy = min(self.ui.happy + 10, self.ui.stats['happiness'])
 
             self.screen.blit(self.background, (0, 0))
             self.monster.update(self.screen)
@@ -80,12 +76,29 @@ class Game():
 
             self.ui.display()
 
-            if self.monster.monster_select == 2 and current_time - self.last_button_click_time >= 3000:
+            
+
+            if all([self.ui.feeding >= self.ui.stats['feeding'], # Day 2
+                    self.ui.cleanliness >= self.ui.stats['cleanliness'],
+                    self.ui.happy >= self.ui.stats['happiness']]) and self.day == 1  :
+                self.ui.reset_stats()
+                self.monster.monster_select = 5 
+                self.day += 1
+                
+                
+            elif all([self.ui.feeding >= self.ui.stats['feeding'], # Day 3
+                    self.ui.cleanliness >= self.ui.stats['cleanliness'],
+                    self.ui.happy >= self.ui.stats['happiness']]) and self.day == 2  :
+                self.ui.reset_stats()
+                self.monster.monster_select = 9 
+                self.day += 1
+
+            if self.monster.monster_select in [2, 3, 4] and current_time - self.last_button_click_time >= 3000:
                 self.monster.monster_select = 1
-            if self.monster.monster_select == 3 and current_time - self.last_button_click_time >= 3000:
-                self.monster.monster_select = 1
-            if self.monster.monster_select == 4 and current_time - self.last_button_click_time >= 3000:
-                self.monster.monster_select = 1
+            elif self.monster.monster_select in [6, 7, 8] and current_time - self.last_button_click_time >= 3000:
+                self.monster.monster_select = 5
+            elif self.monster.monster_select in [10, 11, 12] and current_time - self.last_button_click_time >= 3000:
+                self.monster.monster_select = 9
 
             if self.current_scene == "game":
                 self.render_game_timer()

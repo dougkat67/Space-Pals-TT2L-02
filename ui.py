@@ -6,7 +6,7 @@ class UI:
     def __init__(self):
         # general
         self.display_surface = pygame.display.get_surface()
-        self.font = pygame.font.Font(UI_FONT , UI_FONT_SIZE)
+        self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
 
         # bar setup
         self.satiety_bar_rect = pygame.Rect(10, 10, FEEDING_BAR_WIDTH, BAR_HEIGHT)
@@ -14,11 +14,11 @@ class UI:
         self.clear_bar_rect = pygame.Rect(10, 54, HAPPINESS_BAR_WIDTH, BAR_HEIGHT)
 
         # stats
-        self.stats = {'happiness':100, 'cleanliness':100, 'feeding':100}
-        self.happy = self.stats['happiness'] * 0.7
+        self.stats = {'happiness': 100, 'cleanliness': 100, 'feeding': 100}
+        self.happy = self.stats['happiness'] * 0.5
         self.cleanliness = self.stats['cleanliness'] * 0.5
         self.feeding = self.stats['feeding'] * 0.5
-    
+
     def show_bar(self, current, max_amount, bg_rect, color):
         pygame.draw.rect(self.display_surface, UI_BG_COLOR, bg_rect)
         
@@ -30,8 +30,8 @@ class UI:
         # drawing the bar
         pygame.draw.rect(self.display_surface, color, current_rect)
         pygame.draw.rect(self.display_surface, UI_BORDER_COLOR, bg_rect, 3)
-                
-    def display(self, ): # display ui on screen
+
+    def display(self):
         self.show_bar(self.feeding, self.stats['feeding'], self.satiety_bar_rect, SATIETY_COLOR)
         self.show_bar(self.happy, self.stats['happiness'], self.happy_bar_rect, HAPPY_COLOR)
         self.show_bar(self.cleanliness, self.stats['cleanliness'], self.clear_bar_rect, CLEAR_COLOR)
@@ -41,4 +41,8 @@ class UI:
 
     def render(self, display):
         pass
-        
+
+    def reset_stats(self):
+        self.feeding = 0
+        self.happy = 0
+        self.cleanliness = 0
