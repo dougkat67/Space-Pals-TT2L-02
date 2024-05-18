@@ -1,6 +1,7 @@
 import os
 import random
 import pygame
+from collecting_coins import Coin
 
 # class the orange dude
 class Player(object):
@@ -52,19 +53,27 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 clock = pygame.time.Clock()
 walls = [] # list to hold the walls
+grid_cell_size = 50
+coin_images = [pygame.image.load('images/coin_0.png'),
+               pygame.image.load('images/coin_1.png'),
+               pygame.image.load('images/coin_2.png'),
+               pygame.image.load('images/coin_3.png'),
+               pygame.image.load('images/coin_4.png'),
+               pygame.image.load('images/coin_5.png')]
+coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_width, grid_cell_size) for y in range(0, screen_height, grid_cell_size)]
 
 # holds the level layout in a list of strings
 # use 20walls/row, 10walls/column
 level = [
     "WWWWWWWWWWWWWWWWWWWW",
-    "W                  W",
-    "W                  W",
-    "WWW    WWWWWWWWWWWWW",
-    "WWW    WWWWWWWWWWWWW",
-    "WWW    WWWWWWWWWWWWW",
-    "WWW    WWWWWWWWWWWWW",
-    "WWW                W",
-    "WWW               EW",
+    "W       W   WWWWWWWW",
+    "WWW  WWWWW  WWWWWWWW",
+    "WWW         WWWW   W",
+    "W           WWWW   W",
+    "WWWWW              W",
+    "W   W WWW        W W",
+    "W W   WWW  WWWW  W W",
+    "W W   WWW   WWWWWWEW",
     "WWWWWWWWWWWWWWWWWWWW",
 ]
 
@@ -84,12 +93,22 @@ for y, row in enumerate(level):
             end_rect = pygame.Rect(x * grid_cell_size, y * grid_cell_size, grid_cell_size, grid_cell_size)
             pygame.draw.rect(screen, (255, 165, 0), end_rect) # Draw the exit
 
+# create coins at specific positions
+coins = [Coin(grid_cell_size,(4, 2), coin_images),
+         Coin(grid_cell_size, (10, 4), coin_images),
+         Coin(grid_cell_size, (18, 6), coin_images)
+         ]
+
 # Set the player's initial position
-player_initial_position = (grid_cell_size // 0.85, grid_cell_size // 0.85)  # Adjust the initial position here
+initial_grid_x = 1
+initial_grid_y = 1
+player_initial_position = (initial_grid_x * grid_cell_size, initial_grid_y * grid_cell_size)
 player = Player(grid_cell_size, player_initial_position)  # Create the player with adjusted initial position
 
 running = True
 while running:
+    # calculate delta time
+    dt = clock.tick(60) / 1000.0 # convert milliseconds to seconds
     # handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -119,6 +138,9 @@ while running:
     pygame.draw.rect(screen, (255, 165, 0), end_rect)
     # draw the player
     pygame.draw.rect(screen, (0, 0, 255), player.rect)
+    for coin in coins:
+        coin.update(dt) # update coin animation
+        screen.blit(coin.image, coin.rect) # render coin image on screen
 
     # update the display
     pygame.display.flip()
