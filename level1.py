@@ -66,9 +66,9 @@ coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_widt
 # use 20walls/row, 10walls/column
 level = [
     "WWWWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWWWW",
     "W       W   WWWWWWWW",
     "WWW  WWWWW  WWWWWWWW",
-    "WWW         WWWW   W",
     "W           WWWW   W",
     "WWWWW              W",
     "W   W WWW        W W",
@@ -101,14 +101,36 @@ coins = [Coin(grid_cell_size,(4, 2), coin_images),
 
 # Set the player's initial position
 initial_grid_x = 1
-initial_grid_y = 1
+initial_grid_y = 2
 player_initial_position = (initial_grid_x * grid_cell_size, initial_grid_y * grid_cell_size)
 player = Player(grid_cell_size, player_initial_position)  # Create the player with adjusted initial position
 
+# variables to track collected coins
+collected_coins = 0
+total_coins = len(coins)
+# font type for displaying collected points
+font = pygame.font.Font(None, 36)
+# load the coin image
+coin_image = pygame.image.load('images/coin_0.png')
+
+# initialize variables for the timer
+time_limit = 10 # 10 seconds
+current_time = 0
+timer_font = pygame.font.Font(None, 36)
+
 running = True
+initial_time = 10 # initial time(30 seconds)
+start_time = pygame.time.get_ticks() // 1000 # current time in seconds
 while running:
     # calculate delta time
     dt = clock.tick(60) / 1000.0 # convert milliseconds to seconds
+    current_time += dt
+
+    # check if the timer has reached the time limit
+    if current_time >= time_limit:
+        print("Time's up!")
+        running = False
+
     # handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -129,6 +151,12 @@ while running:
         print("You win!")
         running = False
 
+    # check for collision with coins
+    for coin in coins:
+        if player.rect.colliderect(coin.rect):
+            collected_coins += coin.collect()
+            coins = [c for c in coins if c is not coin] # remove collected coin from the list
+
     # fill the screen with black
     screen.fill((0, 0, 0))
     # draw the walls
@@ -141,6 +169,19 @@ while running:
     for coin in coins:
         coin.update(dt) # update coin animation
         screen.blit(coin.image, coin.rect) # render coin image on screen
+
+    # display collected coins using coin image
+    coin_position = (10, 10)
+    screen.blit(coin_image, coin_position)
+
+    # display collected coins at the top left corner
+    collected_text = font.render(f"Collected: {collected_coins}/{total_coins}", True, (0, 0, 0))
+    screen.blit(collected_text, (50,10))
+
+    # Display timer text
+    timer_text = timer_font.render(f"Time: {int(time_limit - current_time)}", True, (0, 0, 0))
+    timer_text_rect = timer_text.get_rect(center=(screen_width // 2, 30))  # Centered at the top middle of the screen
+    screen.blit(timer_text, timer_text_rect)
 
     # update the display
     pygame.display.flip()
