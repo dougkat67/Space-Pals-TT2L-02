@@ -4,15 +4,34 @@ import pygame
 from collecting_coins import Coin
 
 # class the orange dude
-class Player(object):
-    def __init__(self, grid_size, initial_position=(0, 0)):
-        self.rect = pygame.Rect(initial_position[0], initial_position[1], grid_size, grid_size)
+class Player(pygame.sprite.Sprite):
+    def __init__(self, images, grid_size, animation_speed=0.2, initial_position=(0, 0)):
+        super().__init__()
+        if isinstance(images, list):
+            self.images = images
+        else:
+            self.images = [images] # ensure images is always treated as a list
+        self.image_index = 0
+        self.image = self.images[self.image_index]
+        self.animation_speed = animation_speed
+        self.animation_timer = 0
+        # ensure initial_position is a tuple
+        self.rect = self.image.get_rect(topleft=initial_position if isinstance(initial_position, tuple) else (0, 0))
         self.grid_size = grid_size
 
+    def update(self):
+        # update the player's image for animation
+        self.animation_timer += dt
+        if self.animation_timer >= self.animation_speed:
+            self.animation_timer = 0
+            self.image_index = (self.image_index + 1) % len(self.images)
+            self.image = self.images[self.image_index]
+
     def move(self, dx, dy):
-        # move by grid size
-        dx *= self.grid_size
-        dy *= self.grid_size
+        # move the player
+        self.rect.x += dx * self.grid_size
+        self.rect.y += dy * self.grid_size
+
         # move each axis separately. Note that this checks for collision
         if dx != 0:
             self.move_single_axis(dx, 0)
@@ -51,15 +70,23 @@ pygame.display.set_caption("Maze")
 screen_width, screen_height = 1000,500
 screen = pygame.display.set_mode((screen_width, screen_height))
 
+alien_images = [
+    pygame.transform.scale(pygame.image.load('images/alien_0.png'), (45, 45)),
+    pygame.transform.scale(pygame.image.load('images/alien_1.png'), (45, 45)),
+    pygame.transform.scale(pygame.image.load('images/alien_2.png'), (45, 45)),
+    pygame.transform.scale(pygame.image.load('images/alien_3.png'), (45, 45))
+    ]
 clock = pygame.time.Clock()
 walls = [] # list to hold the walls
 grid_cell_size = 50
-coin_images = [pygame.image.load('images/coin_0.png'),
-               pygame.image.load('images/coin_1.png'),
-               pygame.image.load('images/coin_2.png'),
-               pygame.image.load('images/coin_3.png'),
-               pygame.image.load('images/coin_4.png'),
-               pygame.image.load('images/coin_5.png')]
+coin_images = [
+    pygame.image.load('images/coin_0.png'),
+    pygame.image.load('images/coin_1.png'),
+    pygame.image.load('images/coin_2.png'),
+    pygame.image.load('images/coin_3.png'),
+    pygame.image.load('images/coin_4.png'),
+    pygame.image.load('images/coin_5.png')
+    ]
 coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_width, grid_cell_size) for y in range(0, screen_height, grid_cell_size)]
 
 # holds the level layout in a list of strings
@@ -99,11 +126,18 @@ coins = [Coin(grid_cell_size,(4, 2), coin_images),
          Coin(grid_cell_size, (18, 6), coin_images)
          ]
 
-# Set the player's initial position
+# alien's initial position
 initial_grid_x = 1
 initial_grid_y = 2
 player_initial_position = (initial_grid_x * grid_cell_size, initial_grid_y * grid_cell_size)
-player = Player(grid_cell_size, player_initial_position)  # Create the player with adjusted initial position
+player = Player(alien_images, grid_cell_size, animation_speed=0.9, initial_position=player_initial_position)  # Create the player with adjusted initial position
+
+# set up the alien sprite
+grid_cell_size = 50
+player_initial_position = (1 * grid_cell_size, 2 * grid_cell_size)
+player = Player(alien_images, grid_cell_size, initial_position=player_initial_position)
+all_sprites = pygame.sprite.Group()
+all_sprites.add(player)
 
 # variables to track collected coins
 collected_coins = 0
@@ -157,15 +191,25 @@ while running:
             collected_coins += coin.collect()
             coins = [c for c in coins if c is not coin] # remove collected coin from the list
 
-    # fill the screen with black
-    screen.fill((0, 0, 0))
+    # update all sprites
+    all_sprites.update()
+
+    # fill the screen with bg image
+    background_image = pygame.image.load('images/minigame_background.png')
+    screen.blit(background_image, (0, 0))
+
+    # draw all sprites
+    all_sprites.draw(screen)
+
     # draw the walls
     for wall in walls:
         pygame.draw.rect(screen, (255, 255, 255), wall.rect)
+
     # draw the exit
     pygame.draw.rect(screen, (255, 165, 0), end_rect)
+
     # draw the player
-    pygame.draw.rect(screen, (0, 0, 255), player.rect)
+    screen.blit(player.image, player.rect)
     for coin in coins:
         coin.update(dt) # update coin animation
         screen.blit(coin.image, coin.rect) # render coin image on screen
