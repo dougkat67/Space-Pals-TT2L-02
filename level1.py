@@ -76,9 +76,11 @@ alien_images = [
     pygame.transform.scale(pygame.image.load('images/alien_2.png'), (45, 45)),
     pygame.transform.scale(pygame.image.load('images/alien_3.png'), (45, 45))
     ]
+
 clock = pygame.time.Clock()
 walls = [] # list to hold the walls
 grid_cell_size = 50
+
 coin_images = [
     pygame.image.load('images/coin_0.png'),
     pygame.image.load('images/coin_1.png'),
@@ -87,6 +89,7 @@ coin_images = [
     pygame.image.load('images/coin_4.png'),
     pygame.image.load('images/coin_5.png')
     ]
+
 coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_width, grid_cell_size) for y in range(0, screen_height, grid_cell_size)]
 
 # holds the level layout in a list of strings
@@ -152,6 +155,15 @@ time_limit = 10 # 10 seconds
 current_time = 0
 timer_font = pygame.font.Font(None, 36)
 
+# add variables to track game and conditions
+player_won = False
+time_up = False
+
+end_message_font_size = 188
+end_message_duration = 3000  # 3 seconds in milliseconds
+end_message_display_time = 0  # Variable to track how long the end message has been displayed
+end_message_font = pygame.font.Font(None, end_message_font_size)
+
 running = True
 initial_time = 10 # initial time(30 seconds)
 start_time = pygame.time.get_ticks() // 1000 # current time in seconds
@@ -162,7 +174,7 @@ while running:
 
     # check if the timer has reached the time limit
     if current_time >= time_limit:
-        print("Time's up!")
+        time_up = True
         running = False
 
     # handle events
@@ -182,7 +194,7 @@ while running:
 
     # check for collision with the exit
     if player.rect.colliderect(end_rect):
-        print("You win!")
+        player_won = True
         running = False
 
     # check for collision with coins
@@ -195,15 +207,14 @@ while running:
     all_sprites.update()
 
     # fill the screen with bg image
-    background_image = pygame.image.load('images/minigame_background.png')
-    screen.blit(background_image, (0, 0))
+    screen.fill((173, 216, 230))
 
     # draw all sprites
     all_sprites.draw(screen)
 
     # draw the walls
     for wall in walls:
-        pygame.draw.rect(screen, (255, 255, 255), wall.rect)
+        pygame.draw.rect(screen, (0, 0, 0), wall.rect)
 
     # draw the exit
     pygame.draw.rect(screen, (255, 165, 0), end_rect)
@@ -219,16 +230,37 @@ while running:
     screen.blit(coin_image, coin_position)
 
     # display collected coins at the top left corner
-    collected_text = font.render(f"Collected: {collected_coins}/{total_coins}", True, (0, 0, 0))
+    collected_text = font.render(f"Collected: {collected_coins}/{total_coins}", True, (255, 255, 255))
     screen.blit(collected_text, (50,10))
 
     # Display timer text
-    timer_text = timer_font.render(f"Time: {int(time_limit - current_time)}", True, (0, 0, 0))
+    # calculate remaining time
+    remaining_time = max(time_limit - current_time, 0)
+    timer_text = timer_font.render(f"Time: {int(remaining_time)}", True, (255, 255, 255))
     timer_text_rect = timer_text.get_rect(center=(screen_width // 2, 30))  # Centered at the top middle of the screen
     screen.blit(timer_text, timer_text_rect)
 
+    # Display end game messages if conditions are met
+    if time_up and not player_won:
+        end_text = pygame.font.Font(None, end_message_font_size).render("Time's up!", True, (255, 0, 0))  # Red color for time's up message
+        end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
+        screen.blit(end_text, end_text_rect)
+    elif player_won:
+        end_text = pygame.font.Font(None, end_message_font_size).render("You win!", True, (0, 255, 0))  # Green color for you win message
+        end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
+        screen.blit(end_text, end_text_rect)
+
     # update the display
     pygame.display.flip()
+
+    # Check if an end game message is being displayed
+    if (time_up and not player_won) or player_won:
+        # Get the current time
+        current_time = pygame.time.get_ticks()
+
+        # Check if the end message has been displayed for the desired duration
+        if current_time - end_message_display_time >= end_message_duration:
+            running = False  # Exit the game loop and quit the game
 
     # cap the frame rate
     clock.tick(60)
