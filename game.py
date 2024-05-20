@@ -3,6 +3,7 @@ import time
 from states.menu import Menu
 
 
+
 class Game():
     def __init__(self):
         pygame.init()
@@ -25,7 +26,8 @@ class Game():
             self.render()
 
     def get_events(self):
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
                 self.running = False
                 self.playing = False
@@ -48,21 +50,23 @@ class Game():
                 if event.key == pygame.K_RETURN:
                     self.actions["start"] = True
 
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a:
-                    self.actions["left"] = False
-                if event.key == pygame.K_d:
-                    self.actions["right"] = False
-                if event.key == pygame.K_w:
-                    self.actions["up"] = False
-                if event.key == pygame.K_s:
-                    self.actions["down"] = False
-                if event.key == pygame.K_o:
-                    self.actions["action1"] = False
-                if event.key == pygame.K_p:
-                    self.actions["action2"] = False
-                if event.key == pygame.K_RETURN:
-                    self.actions["start"] = False
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_a:
+                        self.actions["left"] = False
+                    if event.key == pygame.K_d:
+                        self.actions["right"] = False
+                    if event.key == pygame.K_w:
+                        self.actions["up"] = False
+                    if event.key == pygame.K_s:
+                        self.actions["down"] = False
+                    if event.key == pygame.K_o:
+                        self.actions["action1"] = False
+                    if event.key == pygame.K_p:
+                        self.actions["action2"] = False
+                    if event.key == pygame.K_RETURN:
+                        self.actions["start"] = False
+        if self.state_stack:
+                self.state_stack[-1].handle_events(events)
 
     def update(self):
         self.state_stack[-1].update(self.dt, self.actions)
@@ -87,6 +91,8 @@ class Game():
 
     def load_states(self):
         self.menu_screen = Menu(self)
+        #self.naming_screen = Naming(self, self.font_name)
+        #self.state_stack.append(self.naming_screen)
         self.state_stack.append(self.menu_screen)
 
     def reset_keys(self):

@@ -1,4 +1,5 @@
-import time 
+from time import strftime 
+
 
 days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
