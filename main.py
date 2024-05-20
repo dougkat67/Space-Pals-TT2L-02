@@ -1,105 +1,111 @@
 import pygame
-import time
-from states.menu import Menu
 
+import sys
 
-
-class Game():
-    def __init__(self):
-        pygame.init()
-        self.running, self.playing = True, True
-        self.DISPLAY_W, self.DISPLAY_H = 1000, 500
-        self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
-        self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
-        self.font_name = pygame.font.SysFont("Pixeltype Regular", 50, False, False)
-        self.actions = {"left": False, "right": False, "up": False, "down": False, "action1": False, "action2": False, "start": False}
-        self.dt, self.prev_time = 0, 0    #dt is delta time
-        self.state_stack = []
-        #self.load_assets()
-        self.load_states()
+class MainMenuState:
+    def __init__(self, game):
+        self.game = game
+        self.running = True
         
-    def game_loop(self):
-        while self.playing:
-            self.get_dt()
-            self.get_events()
-            self.update()
-            self.render()
 
-    def get_events(self):
-        events = pygame.event.get()
-        for event in events:
+    def handle_events(self):
+        for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
-                self.playing = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.running = False
-                    self.playing = False
-                if event.key == pygame.K_a:
-                    self.actions["left"] = True
-                if event.key == pygame.K_d:
-                    self.actions["right"] = True
-                if event.key == pygame.K_w:
-                    self.actions["up"] = True
-                if event.key == pygame.K_s:
-                    self.actions["down"] = True
-                if event.key == pygame.K_o:
-                    self.actions["action1"] = True
-                if event.key == pygame.K_p:
-                    self.actions["action2"] = True
+                self.game.quit()
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    self.actions["start"] = True
-
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_a:
-                        self.actions["left"] = False
-                    if event.key == pygame.K_d:
-                        self.actions["right"] = False
-                    if event.key == pygame.K_w:
-                        self.actions["up"] = False
-                    if event.key == pygame.K_s:
-                        self.actions["down"] = False
-                    if event.key == pygame.K_o:
-                        self.actions["action1"] = False
-                    if event.key == pygame.K_p:
-                        self.actions["action2"] = False
-                    if event.key == pygame.K_RETURN:
-                        self.actions["start"] = False
-        if self.state_stack:
-                self.state_stack[-1].handle_events(events)
+                    self.game.change_state("Naming")
 
     def update(self):
-        self.state_stack[-1].update(self.dt, self.actions)
-   
+        pass
+
     def render(self):
-        self.state_stack[-1].render(self.display, self.font_name)
-        self.window.blit(self.display, (0,0))
-        pygame.display.flip()
+        self.game.display.fill((0, 0, 0))
+        background_image = pygame.image.load("WIP_art/spacepalsmenupage.png").convert()
+        self.game.display.blit(background_image, (0,0))
+        self.game.draw_text("Main Menu", 40, 500, 45)
+        self.game.draw_text("Press ENTER to Start", 20, 470, 350)
+        pygame.display.update()
 
-    def get_dt(self):
-        now = time.time()
-        self.dt = now - self.prev_time
-        self.prev_time = now
+class NamingState:
+    def __init__(self, game):
+        self.game = game
+        self.running = True
+        self.input_text = ""  # Variable to store the player's input text
 
-    def draw_text(self, surface, text, color, x, y, font):
-        #font = self.font_name
-        text_surface = font.render(text, True, color)
-        #text_surface.set_colorkey((0,0,0))
-        text_rect = text_surface.get_rect()
-        text_rect.center = (x, y)
-        surface.blit(text_surface, text_rect)
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.game.quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    # Do something with the input text, e.g., store it or process it
+                    print("Player's input:", self.input_text)
+                    self.input_text = ""  # Clear the input text for the next input
+                elif event.key == pygame.K_BACKSPACE:
+                    # Remove the last character from the input text
+                    self.input_text = self.input_text[:-1]
+                else:
+                    # Append the pressed key to the input text
+                    self.input_text += event.unicode
 
-    def load_states(self):
-        self.menu_screen = Menu(self)
-        #self.naming_screen = Naming(self, self.font_name)
-        #self.state_stack.append(self.naming_screen)
-        self.state_stack.append(self.menu_screen)
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         self.game.quit()
 
-    def reset_keys(self):
-        for action in self.actions:
-            self.actions[action] = False
-   
+    def update(self):
+        pass
+
+    def render(self):
+        self.game.display.fill((0, 0, 0))
+        background_image = pygame.image.load("WIP_art/spacepaslnamingpage.png").convert()
+        egg_image = pygame.image.load("WIP_art/newnamingegg.png").convert_alpha()
+        newegg_image = pygame.transform.scale(egg_image,(300,300))
+        self.game.display.blit(background_image, (0,0))
+        self.game.display.blit(newegg_image, (350,95))
+        self.game.draw_text("You encountered an interesting looking alien egg.", 40, 500, 50)
+        self.game.draw_text("It's hatching!", 40, 500, 100)
+        self.game.draw_text("Enter a name for the egg:", 30, 500, 470)
+        self.game.draw_text(self.input_text, 30, 750, 470)  # Render the input text
+        pygame.display.update()
+
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.running = True
+        self.DISPLAY_W, self.DISPLAY_H = 1000, 500
+        self.display = pygame.display.set_mode((self.DISPLAY_W, self.DISPLAY_H))
+        self.clock = pygame.time.Clock()
+        self.current_state = None
+        self.font_name = pygame.font.SysFont("Pixeltype Regular", 50, False, False)
+
+    def change_state(self, new_state):
+        if new_state == "MainMenu":
+            self.current_state = MainMenuState(self)
+        elif new_state == "Naming":
+            self.current_state = NamingState(self)
+
+    def quit(self):
+        self.running = False
+
+    def draw_text(self, text, size, x, y):
+        font = self.font_name
+        text_surface = font.render(text, True, (0, 0, 0))
+        text_rect = text_surface.get_rect(center=(x, y))
+        self.display.blit(text_surface, text_rect)
+
+    def run(self):
+        self.change_state("MainMenu")
+
+        while self.running:
+            self.current_state.handle_events()
+            self.current_state.update()
+            self.current_state.render()
+            self.clock.tick(60)
+
+        pygame.quit()
+        sys.exit()
+
 if __name__ == "__main__":
-    g = Game()
-    while g.running:
-        g.game_loop()
+    game = Game()
+    game.run()
