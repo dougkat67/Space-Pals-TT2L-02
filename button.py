@@ -9,6 +9,10 @@ class Button():
         self.rect.x, self.rect.y = 350, 270
         self.click = False
 
+    def is_over(self, pos):
+        return self.rect.collidepoint(pos)
+
+
     def update(self):
         self.mouse = pygame.mouse.get_pos()
         if self.rect.collidepoint(self.mouse):
