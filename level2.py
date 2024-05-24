@@ -81,8 +81,6 @@ clock = pygame.time.Clock()
 walls = [] # list to hold the walls
 grid_cell_size = 50
 
-heart_image = pygame.image.load('images/heart.png')
-
 coin_images = [
     pygame.image.load('images/coin_0.png'),
     pygame.image.load('images/coin_1.png'),
@@ -97,24 +95,34 @@ coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_widt
 spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (grid_cell_size, grid_cell_size))
 
 # holds the level layout in a list of strings
-# use 20walls/row, 10walls/column
+# use 40walls/row, 20walls/column
 level = [
-    "WWWWWWWWWWWWWWWWWWWW",
-    "WWWWWWWWWWWWWWWWWWWW",
-    "W       W   WWWWWWWW",
-    "WWW  WWWWW  WWWWWWWW",
-    "W           WWWW   W",
-    "WWWWW              W",
-    "W   W WWW        W W",
-    "W W W WWW  WWWW  W W",
-    "W W   WWW   WWWWWWEW",
-    "WWWWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "W  WWWWWWWWWW W       WWWWWW           W",
+    "WW WWWWWWWWWW W WW WW WW   W WWWWWWWWW W",
+    "WW WW      WW W WW WW WW W       WW    W",
+    "W     WWWW WW W WW WW WW WWWW WW WW    W",
+    "W WWWWWWWW      WW WW    WWWW WW    WWWW",
+    "W  WWWWWWW WWWWWWW WWWWW WWWW   WW WWWWW",
+    "WW WWWWWWW WWWWW W W     WWWWWW WW WWWWW",
+    "WW WWWW       WW   W WWWW          WWWWW",
+    "WW    W WWWWW WWWW W   WWWWW WWWWW    WW",
+    "WWWWW W WWWWW WWWW WWW WWWWW    WWWWW WW",
+    "WWWWW WWWWWWW      WWW     W WW WWWWW WW",
+    "WWWWW WWWWWWW WW WWWWWWWWW WWWW W     WW",
+    "W     WWWW    WW WWWWWWWWW    W WVWW WWW",
+    "W WWWWWW   WWWWW     WWWWW WW WWW WW WWW",
+    "W     WW WWWW  WWWW WWW    WW WWW WW WWW",
+    "WWWWWWWW WWWW WWWWW WWWWWWWWW     WW EWW",
+    "WWWWWWWW      WWWWW WWWWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
 ]
 
 # Calculate the size of each grid cell based on the screen dimensions and number of cells
 num_cols = len(level[0])
 num_rows = len(level)
-grid_cell_size = 50
+grid_cell_size = 25
 screen_width = num_cols * grid_cell_size
 screen_height = num_rows * grid_cell_size
 
@@ -127,34 +135,8 @@ for y, row in enumerate(level):
             end_rect = pygame.Rect(x * grid_cell_size, y * grid_cell_size, grid_cell_size, grid_cell_size)
             pygame.draw.rect(screen, (255, 165, 0), end_rect) # Draw the exit
 
-num_hearts = 3
-heart_spacing = 40
-heart_position = (screen_width // 2 - heart_spacing, 15)
-def display_hearts():
-    for i in range(num_hearts):
-        screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
-
-# create coins at specific positions (20 coins in every level)
-coins = [Coin(grid_cell_size,(2, 2), coin_images),
-         Coin(grid_cell_size,(7, 2), coin_images),
-         Coin(grid_cell_size, (9, 2), coin_images),
-         Coin(grid_cell_size,(11, 2), coin_images),
-         Coin(grid_cell_size,(4, 3), coin_images),
-         Coin(grid_cell_size, (1, 4), coin_images),
-         Coin(grid_cell_size, (5, 4), coin_images),
-         Coin(grid_cell_size, (10, 4), coin_images),
-         Coin(grid_cell_size, (18, 4), coin_images),
-         Coin(grid_cell_size, (16, 4), coin_images),
-         Coin(grid_cell_size, (7, 5), coin_images),
-         Coin(grid_cell_size, (3, 6), coin_images),
-         Coin(grid_cell_size, (9, 6), coin_images),
-         Coin(grid_cell_size, (13, 6), coin_images),
-         Coin(grid_cell_size, (15, 7), coin_images),
-         Coin(grid_cell_size, (18, 7), coin_images),
-         Coin(grid_cell_size, (1, 8), coin_images),
-         Coin(grid_cell_size, (3, 8), coin_images),
-         Coin(grid_cell_size, (5, 8), coin_images),
-         Coin(grid_cell_size,(10, 8), coin_images),
+# create coins at specific positions
+coins = [Coin(grid_cell_size,(7, 5), coin_images),
          ]
 
 # alien's initial position
@@ -164,7 +146,7 @@ player_initial_position = (initial_grid_x * grid_cell_size, initial_grid_y * gri
 player = Player(alien_images, grid_cell_size, animation_speed=0.9, initial_position=player_initial_position)  # Create the player with adjusted initial position
 
 # set up the alien sprite
-grid_cell_size = 50
+grid_cell_size = 25
 player_initial_position = (1 * grid_cell_size, 2 * grid_cell_size)
 player = Player(alien_images, grid_cell_size, initial_position=player_initial_position)
 all_sprites = pygame.sprite.Group()
@@ -265,21 +247,10 @@ while running:
     # calculate remaining time
     remaining_time = max(time_limit - current_time, 0)
     timer_text = timer_font.render(f"Time: {int(remaining_time)}", True, (255, 255, 255))
-    timer_text_rect = timer_text.get_rect(topright=(screen_width - 10, 10))
+    timer_text_rect = timer_text.get_rect(center=(screen_width // 2, 30))  # Centered at the top middle of the screen
     screen.blit(timer_text, timer_text_rect)
 
     # Display end game messages if conditions are met
-    if time_up and not player_won:
-        end_text = pygame.font.Font(None, end_message_font_size).render("Time's up!", True, (255, 0, 0))  # Red color for time's up message
-        end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
-        screen.blit(end_text, end_text_rect)
-    elif player_won:
-        end_text = pygame.font.Font(None, end_message_font_size).render("You win!", True, (0, 255, 0))  # Green color for you win message
-        end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
-        screen.blit(end_text, end_text_rect)
-
-    display_hearts()
-    # display end game messages if conditions are met
     if time_up and not player_won:
         end_text = pygame.font.Font(None, end_message_font_size).render("Time's up!", True, (255, 0, 0))  # Red color for time's up message
         end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
