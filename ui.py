@@ -19,6 +19,8 @@ class UI:
         self.cleanliness = self.stats['cleanliness'] * 0.5
         self.feeding = self.stats['feeding'] * 0.5
 
+        self.coin = 5000
+
     def show_bar(self, current, max_amount, bg_rect, color):
         pygame.draw.rect(self.display_surface, UI_BG_COLOR, bg_rect)
         
@@ -31,10 +33,26 @@ class UI:
         pygame.draw.rect(self.display_surface, color, current_rect)
         pygame.draw.rect(self.display_surface, UI_BORDER_COLOR, bg_rect, 3)
 
+    def show_coin(self,exp):
+        text_surf = self.font.render(str(int(exp)),False, TEXT_COLOR)
+        x = self.display_surface.get_size()[0] - 20
+        y = self.display_surface.get_size()[1] - 20
+        text_rect = text_surf.get_rect(bottomright = (x,y))
+        
+        pygame.draw.rect(self.display_surface,UI_BG_COLOR,text_rect.inflate(20,20))
+        self.display_surface.blit(text_surf,text_rect)
+        pygame.draw.rect(self.display_surface,UI_BORDER_COLOR,text_rect.inflate(20,20),3)
+
     def display(self):
         self.show_bar(self.feeding, self.stats['feeding'], self.satiety_bar_rect, SATIETY_COLOR)
         self.show_bar(self.happy, self.stats['happiness'], self.happy_bar_rect, HAPPY_COLOR)
         self.show_bar(self.cleanliness, self.stats['cleanliness'], self.clear_bar_rect, CLEAR_COLOR)
+
+        self.show_coin(self.coin)
+        
+    
+
+
 
     def update(self, deltatime, player_action):
         pass
