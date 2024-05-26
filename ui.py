@@ -15,9 +15,9 @@ class UI:
 
         # stats
         self.stats = {'happiness': 100, 'cleanliness': 100, 'feeding': 100}
-        self.happy = self.stats['happiness'] * 0.5
-        self.cleanliness = self.stats['cleanliness'] * 0.5
-        self.feeding = self.stats['feeding'] * 0.5
+        self.happy = self.stats['happiness'] * 0.0
+        self.cleanliness = self.stats['cleanliness'] * 0.1
+        self.feeding = self.stats['feeding'] * 0.0
 
         self.coin = 5000
 
@@ -61,6 +61,4 @@ class UI:
         pass
 
     def reset_stats(self):
-        self.feeding = 0
         self.happy = 0
-        self.cleanliness = 0

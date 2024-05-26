@@ -15,8 +15,8 @@ UI_BORDER_COLOR = '#111111'
 TEXT_COLOR = '#000000'
 
 #ui colors 
-SATIETY_COLOR = 'red'
-HAPPY_COLOR = 'blue'
+SATIETY_COLOR = 'yellow'
+HAPPY_COLOR = 'red'
 CLEAR_COLOR = 'green'
 UI_BORDER_COLOR_ACTIVE = 'gold'
 
