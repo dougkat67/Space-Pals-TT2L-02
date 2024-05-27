@@ -5,7 +5,7 @@ class Naming(State):    #inherit from State
     def __init__(self, game):
         super().__init__(game)  #use back the abstract state class
         self.game = game
-        self.naming_image =  pygame.image.load("WIP_art/spacepaslnamingpage.png").convert()
+        self.naming_image =  pygame.image.load("WIP_art/naming_page.png").convert()
         self.naming_font = pygame.font.SysFont("Pixeltype Regular", 50, False, False)
         self.user_text = ""        
         self.input_rect = pygame.Rect(500,450,200,32) #x, y, rect width, rect height
@@ -32,6 +32,7 @@ class Naming(State):    #inherit from State
 
     def update(self, deltatime, actions):
         self.color = self.color_active if self.active else self.color_passive
+
        
     def render(self, display, font):
         display.blit(self.naming_image, (0,0))
