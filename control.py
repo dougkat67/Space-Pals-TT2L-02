@@ -1,7 +1,7 @@
 import pygame
 import sys
 from screen1 import Screen1
-from alien_animation import AlienAnimation
+from level1 import Player
 
 # Initialize Pygame
 pygame.init()

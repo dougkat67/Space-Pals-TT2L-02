@@ -254,18 +254,17 @@ while running:
         screen.blit(coin.image, coin.rect) # render coin image on screen
 
     # display collected coins using coin image
-    coin_position = (10, 10)
+    coin_position = (780, 8)
     screen.blit(coin_image, coin_position)
 
-    # display collected coins at the top left corner
+    # display collected coins at the top right corner
     collected_text = font.render(f"Collected: {collected_coins}/{total_coins}", True, (255, 255, 255))
-    screen.blit(collected_text, (50,10))
+    screen.blit(collected_text, (screen_width - collected_text.get_width() - 10, 10))
 
     # Display timer text
-    # calculate remaining time
     remaining_time = max(time_limit - current_time, 0)
     timer_text = timer_font.render(f"Time: {int(remaining_time)}", True, (255, 255, 255))
-    timer_text_rect = timer_text.get_rect(topright=(screen_width - 10, 10))
+    timer_text_rect = timer_text.get_rect(topright=(screen_width - 10, 10 + collected_text.get_height() + 5))
     screen.blit(timer_text, timer_text_rect)
 
     # Display end game messages if conditions are met

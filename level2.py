@@ -136,7 +136,7 @@ for y, row in enumerate(level):
             pygame.draw.rect(screen, (255, 165, 0), end_rect) # Draw the exit
 
 # create coins at specific positions
-coins = [Coin(grid_cell_size,(7, 5), coin_images),
+coins = [Coin(grid_cell_size,(7, 4), coin_images),
          ]
 
 # alien's initial position
