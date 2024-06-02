@@ -127,9 +127,15 @@ for y, row in enumerate(level):
             end_rect = pygame.Rect(x * grid_cell_size, y * grid_cell_size, grid_cell_size, grid_cell_size)
             pygame.draw.rect(screen, (255, 165, 0), end_rect) # Draw the exit
 
+font = pygame.font.Font(None, 36)
+attempt = 1
+attempt_text = font.render(f"Attempt : {attempt}", True, (255, 255, 255))
+attempt_text_rect = attempt_text.get_rect(center = (screen_width // 2, 25))
+screen.blit(attempt_text, attempt_text_rect)
+
 num_hearts = 3
 heart_spacing = 40
-heart_position = (screen_width // 2 - heart_spacing, 15)
+heart_position = (10, 10)
 def display_hearts():
     for i in range(num_hearts):
         screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
@@ -192,20 +198,21 @@ end_message_duration = 3000  # 3 seconds in milliseconds
 end_message_display_time = 0  # Variable to track how long the end message has been displayed
 end_message_font = pygame.font.Font(None, end_message_font_size)
 
+timer_text = timer_font.render("", True, (255, 255, 255))
+collected_text = font.render("", True, (255, 255, 255))
+coin_position = (780, 8)
+timer_text_rect = timer_text.get_rect(topright=(screen_width - 130, 10 + collected_text.get_height() + 5))
+
 running = True
 initial_time = 10 # initial time(30 seconds)
 start_time = pygame.time.get_ticks() // 1000 # current time in seconds
-while running:
-    # calculate delta time
-    dt = clock.tick(60) / 1000.0 # convert milliseconds to seconds
+
+while running and attempt <= num_hearts:
+    # Calculate delta time
+    dt = clock.tick(60) / 1000.0  # Convert milliseconds to seconds
     current_time += dt
 
-    # check if the timer has reached the time limit
-    if current_time >= time_limit:
-        time_up = True
-        running = False
-
-    # handle events
+    # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -214,93 +221,85 @@ while running:
             if pressed_keys[pygame.K_a]:
                 player.move(-1, 0)  # Move left
             elif pressed_keys[pygame.K_d]:
-                player.move(1, 0)   # Move right
+                player.move(1, 0)  # Move right
             elif pressed_keys[pygame.K_w]:
                 player.move(0, -1)  # Move up
             elif pressed_keys[pygame.K_s]:
-                player.move(0, 1)   # Move down
+                player.move(0, 1)  # Move down
 
-    # check for collision with the exit
+    # Check for collision with the exit
     if player.rect.colliderect(end_rect):
         player_won = True
         running = False
 
-    # check for collision with coins
+    # Check for collision with coins and collect them
     for coin in coins:
         if player.rect.colliderect(coin.rect):
             collected_coins += coin.collect()
-            coins = [c for c in coins if c is not coin] # remove collected coin from the list
+            coins.remove(coin)
 
-    # update all sprites
+    # Update all sprites
     all_sprites.update()
 
-    # fill the screen with bg image
+    # Fill the screen with background color
     screen.fill((173, 216, 230))
 
-    # draw all sprites
-    all_sprites.draw(screen)
-
-    # draw the walls
+    # Draw walls, exit, player, and coins
     for wall in walls:
         pygame.draw.rect(screen, (0, 0, 0), wall.rect)
-
-    # draw the exit
     screen.blit(spaceship_image, end_rect)
-
-    # draw the player
     screen.blit(player.image, player.rect)
     for coin in coins:
-        coin.update(dt) # update coin animation
-        screen.blit(coin.image, coin.rect) # render coin image on screen
+        coin.update(dt)
+        screen.blit(coin.image, coin.rect)
 
-    # display collected coins using coin image
-    coin_position = (780, 8)
+    # Display attempt text
+    screen.blit(attempt_text, attempt_text_rect)
+
+    # Display collected coins count
     screen.blit(coin_image, coin_position)
-
-    # display collected coins at the top right corner
     collected_text = font.render(f"Collected: {collected_coins}/{total_coins}", True, (255, 255, 255))
     screen.blit(collected_text, (screen_width - collected_text.get_width() - 10, 10))
 
-    # Display timer text
+    # Display remaining time
     remaining_time = max(time_limit - current_time, 0)
     timer_text = timer_font.render(f"Time: {int(remaining_time)}", True, (255, 255, 255))
-    timer_text_rect = timer_text.get_rect(topright=(screen_width - 10, 10 + collected_text.get_height() + 5))
     screen.blit(timer_text, timer_text_rect)
 
     # Display end game messages if conditions are met
     if time_up and not player_won:
-        end_text = pygame.font.Font(None, end_message_font_size).render("Time's up!", True, (255, 0, 0))  # Red color for time's up message
-        end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
-        screen.blit(end_text, end_text_rect)
+        message_color = (255, 0, 0)  # Red for time's up
+        message_text = "Time's up!"
     elif player_won:
-        end_text = pygame.font.Font(None, end_message_font_size).render("You win!", True, (0, 255, 0))  # Green color for you win message
+        message_color = (0, 255, 0)  # Green for win message
+        message_text = "You win!"
+
+    if time_up or player_won:
+        end_text = pygame.font.Font(None, end_message_font_size).render(message_text, True, message_color)
         end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
         screen.blit(end_text, end_text_rect)
 
-    display_hearts()
-    # display end game messages if conditions are met
+    # Check end game conditions
     if time_up and not player_won:
-        end_text = pygame.font.Font(None, end_message_font_size).render("Time's up!", True, (255, 0, 0))  # Red color for time's up message
-        end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
-        screen.blit(end_text, end_text_rect)
-    elif player_won:
-        end_text = pygame.font.Font(None, end_message_font_size).render("You win!", True, (0, 255, 0))  # Green color for you win message
-        end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
-        screen.blit(end_text, end_text_rect)
+        attempt += 1
+        if attempt <= num_hearts:
+            player.rect.topleft = player_initial_position
+            current_time = 0
+            time_up = False
+        else:
+            running = False  # Player loses if hearts are exhausted
 
-    # update the display
+    if player_won or attempt > num_hearts:
+        running = False  # End game if player won or attempted 3 times
+
+    # Display hearts for attempts
+    display_hearts()
+
+    # Update display
     pygame.display.flip()
 
-    # Check if an end game message is being displayed
-    if (time_up and not player_won) or player_won:
-        # Get the current time
-        current_time = pygame.time.get_ticks()
-
-        # Check if the end message has been displayed for the desired duration
-        if current_time - end_message_display_time >= end_message_duration:
-            running = False  # Exit the game loop and quit the game
-
-    # cap the frame rate
+    # Cap the frame rate
     clock.tick(60)
 
+# Quit Pygame
 pygame.quit()
