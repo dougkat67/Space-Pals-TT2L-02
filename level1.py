@@ -136,9 +136,28 @@ screen.blit(attempt_text, attempt_text_rect)
 num_hearts = 3
 heart_spacing = 40
 heart_position = (10, 10)
-def display_hearts():
+def display_hearts(attempt):
     for i in range(num_hearts):
-        screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+        if attempt == 1:
+            screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+        elif attempt == 2:
+            if i < 2:
+                screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+            else:
+                # Convert the heart image to black and white
+                bw_heart_image = heart_image.convert()
+                bw_heart_image = bw_heart_image.convert_alpha()
+                bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
+                screen.blit(bw_heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+        elif attempt == 3:
+            if i == 0:
+                screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+            else:
+                # Convert the heart image to black and white
+                bw_heart_image = heart_image.convert()
+                bw_heart_image = bw_heart_image.convert_alpha()
+                bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
+                screen.blit(bw_heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
 
 # create coins at specific positions (20 coins in every level)
 coins = [Coin(grid_cell_size,(2, 2), coin_images),
@@ -162,6 +181,15 @@ coins = [Coin(grid_cell_size,(2, 2), coin_images),
          Coin(grid_cell_size, (5, 8), coin_images),
          Coin(grid_cell_size,(10, 8), coin_images),
          ]
+coin_positions = [(2, 2), (7, 2), (9, 2), (11, 2), (4, 3), 
+                  (1, 4), (5, 4), (10, 4), (18, 4), (16, 4), 
+                  (7, 5), (3, 6), (9, 6), (13, 6), (15, 7), (18, 7), 
+                  (1, 8), (3, 8), (5, 8), (10, 8)
+                  ]
+def reset_coins(coin_positions):
+    global coins
+    coins = [Coin(grid_cell_size, pos, coin_images) for pos in coin_positions]
+
 
 # alien's initial position
 initial_grid_x = 1
@@ -200,7 +228,7 @@ end_message_font = pygame.font.Font(None, end_message_font_size)
 
 timer_text = timer_font.render("", True, (255, 255, 255))
 collected_text = font.render("", True, (255, 255, 255))
-coin_position = (780, 8)
+coin_position = (765, 6)
 timer_text_rect = timer_text.get_rect(topright=(screen_width - 130, 10 + collected_text.get_height() + 5))
 
 running = True
@@ -258,7 +286,7 @@ while running and attempt <= num_hearts:
 
     # Display collected coins count
     screen.blit(coin_image, coin_position)
-    collected_text = font.render(f"Collected: {collected_coins}/{total_coins}", True, (255, 255, 255))
+    collected_text = font.render(f"Collected: {collected_coins:02d}/{total_coins}", True, (255, 255, 255))
     screen.blit(collected_text, (screen_width - collected_text.get_width() - 10, 10))
 
     # Display remaining time
@@ -279,13 +307,23 @@ while running and attempt <= num_hearts:
         end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
         screen.blit(end_text, end_text_rect)
 
+    # check if time is up
+    if current_time >= time_limit:
+        time_up = True
+
     # Check end game conditions
     if time_up and not player_won:
         attempt += 1
         if attempt <= num_hearts:
+            # reset game state for next attempt
             player.rect.topleft = player_initial_position
             current_time = 0
             time_up = False
+            collected_coins = 0
+            # update attempt text for the next attempt
+            attempt_text = font.render(f"Attempt : {attempt}", True, (255, 255, 255))
+            screen.blit(attempt_text, attempt_text_rect)
+            reset_coins(coin_positions)
         else:
             running = False  # Player loses if hearts are exhausted
 
@@ -293,7 +331,7 @@ while running and attempt <= num_hearts:
         running = False  # End game if player won or attempted 3 times
 
     # Display hearts for attempts
-    display_hearts()
+    display_hearts(attempt)
 
     # Update display
     pygame.display.flip()
