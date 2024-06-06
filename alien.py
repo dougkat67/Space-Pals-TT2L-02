@@ -47,7 +47,7 @@ class Alien(pygame.sprite.Sprite):
 
         # Day 5
 
-    def update(self, screen):
+    def update(self):
         # Animation
         self.animation_timer += 1
         if self.animation_timer >= self.animation_cooldown:
@@ -56,6 +56,7 @@ class Alien(pygame.sprite.Sprite):
         if self.frame >= 4:
             self.frame = 0
 
+    def render(self, screen):
         # Render monster
         if self.monster_select == 1:
             animation = self.monster_sprite1.get_frame(self.frame, 480, 480, 1, (0, 0, 0))

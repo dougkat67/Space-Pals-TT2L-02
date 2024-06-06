@@ -10,14 +10,15 @@ from button3 import Button3
 from button4 import Button4
 from setting import SCREEN_WIDTH, SCREEN_HEIGHT
 from ui import UI
+from states.state import State
+# from leaderboard import ButtonGame
 
 
-class Game():
-    def __init__(self):
-        pygame.init()
+class Pet(State):
+    def __init__(self, game):
+        super().__init__(game)
+        self.game = game
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption('Pet Game')
-        self.clock = pygame.time.Clock()
         self.visible_sprites = pygame.sprite.Group()
         self.font = pygame.font.Font(None, 36)
 
@@ -38,6 +39,8 @@ class Game():
         self.start_time = pygame.time.get_ticks()
         self.screen_width = SCREEN_WIDTH
 
+        self.elapsed_time = 0
+
         # Day
         self.day = 1
 
@@ -45,90 +48,74 @@ class Game():
             with open("leaderboard.json", "r") as file:
                 self.leaderboard = json.load(file)
 
-    def update(self):
-        while True:
-            current_time = pygame.time.get_ticks()
-            self.elapsed_time = (current_time - self.start_time) // 1000
+    def handle_events(self, events):
+        pass
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.button1.rect.collidepoint(event.pos):
-                        self.monster.monster_select = 2 if self.monster.monster_select < 5 else 6 if  self.monster.monster_select < 9 else 10
-                        self.last_button_click_time = current_time
-                        self.ui.feeding = min(self.ui.feeding + 10, self.ui.stats['feeding'])
+    def update(self, deltatime, actions):
+        self.monster.update()
+        current_time = pygame.time.get_ticks()
+        self.elapsed_time = (current_time - self.start_time) // 1000
 
-                    elif self.button2.rect.collidepoint(event.pos):
-                        self.monster.monster_select = 3 if self.monster.monster_select < 5 else 7 if  self.monster.monster_select < 9 else 11
-                        self.last_button_click_time = current_time
-                        self.ui.cleanliness = min(self.ui.cleanliness + 10, self.ui.stats['cleanliness'])
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.button1.rect.collidepoint(event.pos):
+                    self.monster.monster_select = 2 if self.monster.monster_select < 5 else 6 if  self.monster.monster_select < 9 else 10
+                    self.last_button_click_time = current_time
+                    self.ui.feeding = min(self.ui.feeding + 10, self.ui.stats['feeding'])
 
-                    elif self.button3.rect.collidepoint(event.pos):
-                        self.monster.monster_select = 4 if self.monster.monster_select < 5 else 8 if  self.monster.monster_select < 9 else 12
-                        self.last_button_click_time = current_time
-                        self.ui.happy = min(self.ui.happy + 10, self.ui.stats['happiness'])
+                elif self.button2.rect.collidepoint(event.pos):
+                    self.monster.monster_select = 3 if self.monster.monster_select < 5 else 7 if  self.monster.monster_select < 9 else 11
+                    self.last_button_click_time = current_time
+                    self.ui.cleanliness = min(self.ui.cleanliness + 10, self.ui.stats['cleanliness'])
 
-            self.screen.blit(self.background, (0, 0))
-            self.monster.update(self.screen)
-            self.visible_sprites.draw(self.screen)
+                elif self.button3.rect.collidepoint(event.pos):
+                    self.monster.monster_select = 4 if self.monster.monster_select < 5 else 8 if  self.monster.monster_select < 9 else 12
+                    self.last_button_click_time = current_time
+                    self.ui.happy = min(self.ui.happy + 10, self.ui.stats['happiness'])
 
-            self.ui.display()
-
+        if all([self.ui.feeding >= self.ui.stats['feeding'], # Day 2
+                self.ui.cleanliness >= self.ui.stats['cleanliness'],
+                self.ui.happy >= self.ui.stats['happiness']]) and self.day == 1  :
+            self.ui.reset_stats()
+            self.monster.monster_select = 5 
+            self.day += 1
             
+            
+        elif all([self.ui.feeding >= self.ui.stats['feeding'], # Day 3
+                self.ui.cleanliness >= self.ui.stats['cleanliness'],
+                self.ui.happy >= self.ui.stats['happiness']]) and self.day == 2  :
+            self.ui.reset_stats()
+            self.monster.monster_select = 9 
+            self.day += 1
 
-            if all([self.ui.feeding >= self.ui.stats['feeding'], # Day 2
-                    self.ui.cleanliness >= self.ui.stats['cleanliness'],
-                    self.ui.happy >= self.ui.stats['happiness']]) and self.day == 1  :
-                self.ui.reset_stats()
-                self.monster.monster_select = 5 
-                self.day += 1
-                
-                
-            elif all([self.ui.feeding >= self.ui.stats['feeding'], # Day 3
-                    self.ui.cleanliness >= self.ui.stats['cleanliness'],
-                    self.ui.happy >= self.ui.stats['happiness']]) and self.day == 2  :
-                self.ui.reset_stats()
-                self.monster.monster_select = 9 
-                self.day += 1
+        if self.monster.monster_select in [2, 3, 4] and current_time - self.last_button_click_time >= 3000:
+            self.monster.monster_select = 1
+        elif self.monster.monster_select in [6, 7, 8] and current_time - self.last_button_click_time >= 3000:
+            self.monster.monster_select = 5
+        elif self.monster.monster_select in [10, 11, 12] and current_time - self.last_button_click_time >= 3000:
+            self.monster.monster_select = 9
 
-            if self.monster.monster_select in [2, 3, 4] and current_time - self.last_button_click_time >= 3000:
-                self.monster.monster_select = 1
-            elif self.monster.monster_select in [6, 7, 8] and current_time - self.last_button_click_time >= 3000:
-                self.monster.monster_select = 5
-            elif self.monster.monster_select in [10, 11, 12] and current_time - self.last_button_click_time >= 3000:
-                self.monster.monster_select = 9
+    
+    def render(self, display, font):
+        # Render the current game state
+        display.blit(self.background, (0, 0))
+        self.monster.render(display)
+        self.visible_sprites.draw(display)
+        self.ui.display(display)
 
-            if self.current_scene == "game":
-                self.render_game_timer()
-            elif self.current_scene == "leaderboard":
-                self.render_leaderboard()
+        if self.current_scene == "game":
+            self.render_game_timer(display)
+        elif self.current_scene == "leaderboard":
+            self.render_leaderboard(display)
 
-            pygame.display.flip()
-            self.clock.tick(60)
-
-    def render_game_timer(self):
+    def render_game_timer(self, display):
         time_surface = self.font.render(f"Time: {self.elapsed_time} seconds", True, (0, 0, 0))
         time_rect = time_surface.get_rect(topright=(self.screen_width - 20, 20))
-        self.screen.blit(time_surface, time_rect)
-
-    def render_leaderboard(self):
-        text_y = 100
-        sorted_leaderboard = sorted(self.leaderboard, key=lambda x: x["time"])
-        for entry in sorted_leaderboard:
-            text_surface = self.font.render(f"{entry['time']} seconds", True, (0, 0, 0))
-            text_rect = text_surface.get_rect(center=(self.screen_width // 2, text_y))
-            self.screen.blit(text_surface, text_rect)
-            text_y += 50
-
-    def save_leaderboard(self):
-        with open("leaderboard.json", "w") as file:
-            json.dump(self.leaderboard, file)
+        display.blit(time_surface, time_rect)
 
     def run(self):
         self.update()
 
-if __name__ == "__main__":
-    game = Game()
-    game.run()
