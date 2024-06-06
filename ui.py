@@ -19,7 +19,7 @@ class UI:
         self.cleanliness = self.stats['cleanliness'] * 0.1
         self.feeding = self.stats['feeding'] * 0.0
 
-        self.coin = 5000
+        self.coin = 5
 
     def show_bar(self, current, max_amount, bg_rect, color):
         pygame.draw.rect(self.display_surface, UI_BG_COLOR, bg_rect)
@@ -39,7 +39,7 @@ class UI:
         y = self.display_surface.get_size()[1] - 20
         text_rect = text_surf.get_rect(bottomright = (x,y))
         
-        pygame.draw.rect(self.display_surface,UI_BG_COLOR,text_rect.inflate(20,20))
+        pygame.draw.rect(self.display_surface,UI_COIN_BG_COLOR,text_rect.inflate(20,20))
         self.display_surface.blit(text_surf,text_rect)
         pygame.draw.rect(self.display_surface,UI_BORDER_COLOR,text_rect.inflate(20,20),3)
 

@@ -12,19 +12,26 @@ class ButtonGame:
         pygame.display.set_caption('Pet Game')
         self.clock = pygame.time.Clock()
 
-        self.font = pygame.font.Font(None, 36) #font 
-        self.start_time = 0 # start time
-        self.elapsed_time = 0 # passed time
+        self.font = pygame.font.Font(None, 36)
+        self.start_time = pygame.time.get_ticks()
+        self.elapsed_time = 0
         
-        self.game = Game
-        self.game = "main.menu" # set main menu as game
+        self.game = Game()  
         
+        self.current_scene = "main_menu"
+        self.leaderboard = []
 
-        self.current_scene = "main_menu" # scene
-        self.leaderboard = [] # score box display
-        if os.path.exists("leaderboard.json"): # save data
+        if os.path.exists("leaderboard.json"):
             with open("leaderboard.json", "r") as file:
                 self.leaderboard = json.load(file)
+
+        
+        self.white = (255, 255, 255)
+        self.red = (255, 0, 0)
+
+        
+        self.screen_width = SCREEN_WIDTH
+        self.screen_height = SCREEN_HEIGHT
 
     def run(self):
         running = True
@@ -42,13 +49,11 @@ class ButtonGame:
 
     def handle_mouse_click(self, event):
         if self.current_scene == "main_menu":
-            if self.button_rect.collidepoint(event.pos): # click the button
-                self.current_scene = "leaderboard" # change scene to leaderboard
-
-                self.elapsed_time = (pygame.time.get_ticks() - self.start_time) // 1000 #recording time
-
-                self.leaderboard.append({"time": self.elapsed_time}) #display time
-                self.start_time = pygame.time.get_ticks() #calculating time
+            if self.button_rect.collidepoint(event.pos):
+                self.current_scene = "leaderboard"
+                self.elapsed_time = (pygame.time.get_ticks() - self.start_time) // 1000
+                self.leaderboard.append({"time": self.elapsed_time})
+                self.start_time = pygame.time.get_ticks()
         elif self.current_scene == "leaderboard":
             self.current_scene = "main_menu"
 
@@ -64,13 +69,17 @@ class ButtonGame:
             self.render_leaderboard()
         pygame.display.flip()
 
-    def render_main_menu(self): # display the main menu
-        self.button_rect = pygame.draw.rect(self.screen, self.red, (self.screen_width // 2 - 50, self.screen_height // 2 - 25, 100, 50))
+    def render_main_menu(self):
+        self.button_rect = pygame.draw.rect(
+            self.screen, 
+            self.red, 
+            (self.screen_width // 2 - 50, self.screen_height // 2 - 25, 100, 50)
+        )
         time_surface = self.font.render(f"Time: {self.elapsed_time} seconds", True, (0, 0, 0))
         time_rect = time_surface.get_rect(topright=(self.screen_width - 20, 20))
         self.screen.blit(time_surface, time_rect)
 
-    def render_leaderboard(self): #display the leaderboard
+    def render_leaderboard(self):
         text_y = 100
         sorted_leaderboard = sorted(self.leaderboard, key=lambda x: x["time"])
         for entry in sorted_leaderboard:
@@ -79,7 +88,7 @@ class ButtonGame:
             self.screen.blit(text_surface, text_rect)
             text_y += 50
 
-    def save_leaderboard(self): # save and load 
+    def save_leaderboard(self):
         with open("leaderboard.json", "w") as file:
             json.dump(self.leaderboard, file)
 
