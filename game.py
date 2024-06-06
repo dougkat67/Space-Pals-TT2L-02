@@ -7,15 +7,16 @@ from states.menu import Menu
 class Game():
     def __init__(self):
         pygame.init()
+        pygame.display.set_caption('Pet Game')
         self.running, self.playing = True, True
         self.DISPLAY_W, self.DISPLAY_H = 1000, 500
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
         self.window = pygame.display.set_mode(((self.DISPLAY_W, self.DISPLAY_H)))
         self.font_name = pygame.font.SysFont("Pixeltype Regular", 50, False, False)
-        self.actions = {"left": False, "right": False, "up": False, "down": False, "action1": False, "action2": False, "start": False}
+        self.actions = {"left": False, "right": False, "up": False, "down": False, "action1": False, "action2": False, "start": False, "play": False}
         self.dt, self.prev_time = 0, 0    #dt is delta time
         self.state_stack = []
-        #self.load_assets()
+        self.clock = pygame.time.Clock()
         self.load_states()
         
     def game_loop(self):
@@ -24,6 +25,8 @@ class Game():
             self.get_events()
             self.update()
             self.render()
+            self.clock.tick(60)
+
 
     def get_events(self):
         events = pygame.event.get()
@@ -31,6 +34,11 @@ class Game():
             if event.type == pygame.QUIT:
                 self.running = False
                 self.playing = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    self.actions["start"] = True
+                    
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
@@ -48,7 +56,7 @@ class Game():
                 if event.key == pygame.K_p:
                     self.actions["action2"] = True
                 if event.key == pygame.K_RETURN:
-                    self.actions["start"] = True
+                    self.actions["play"] = True
 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_a:
@@ -64,7 +72,12 @@ class Game():
                     if event.key == pygame.K_p:
                         self.actions["action2"] = False
                     if event.key == pygame.K_RETURN:
-                        self.actions["start"] = False
+                        self.actions["play"] = False
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                   if pygame.mouse.get_pressed()[0]:
+                    self.actions["start"] = False
+
         if self.state_stack:
                 self.state_stack[-1].handle_events(events)
 

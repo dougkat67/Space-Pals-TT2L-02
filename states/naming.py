@@ -1,5 +1,6 @@
 import pygame
 from states.state import State
+from level import Pet
 
 class Naming(State):    #inherit from State
     def __init__(self, game):
@@ -12,10 +13,10 @@ class Naming(State):    #inherit from State
         self.color_active = ((0,0,0))
         self.color_passive = ((255,0,0))
         self.color = self.color_passive
-
         self.active = False
 
     def handle_events(self, events):
+
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.input_rect.collidepoint(event.pos):
@@ -31,7 +32,14 @@ class Naming(State):    #inherit from State
 
 
     def update(self, deltatime, actions):
+        
         self.color = self.color_active if self.active else self.color_passive
+        self.actions = self.game.actions
+        
+        if self.actions["play"]:
+            new_state = Pet(self.game)
+            new_state.enter_state()   #adds the new state to the top of the stack             
+        self.game.reset_keys()
 
        
     def render(self, display, font):

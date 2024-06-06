@@ -5,7 +5,6 @@ from alien import *
 class UI:
     def __init__(self):
         # general
-        self.display_surface = pygame.display.get_surface()
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
 
         # bar setup
@@ -19,8 +18,8 @@ class UI:
         self.cleanliness = self.stats['cleanliness'] * 0.5
         self.feeding = self.stats['feeding'] * 0.5
 
-    def show_bar(self, current, max_amount, bg_rect, color):
-        pygame.draw.rect(self.display_surface, UI_BG_COLOR, bg_rect)
+    def show_bar(self, display, current, max_amount, bg_rect, color):
+        pygame.draw.rect(display, UI_BG_COLOR, bg_rect)
         
         ratio = current / max_amount
         current_width = bg_rect.width * ratio
@@ -28,13 +27,13 @@ class UI:
         current_rect.width = current_width
 
         # drawing the bar
-        pygame.draw.rect(self.display_surface, color, current_rect)
-        pygame.draw.rect(self.display_surface, UI_BORDER_COLOR, bg_rect, 3)
+        pygame.draw.rect(display, color, current_rect)
+        pygame.draw.rect(display, UI_BORDER_COLOR, bg_rect, 3)
 
-    def display(self):
-        self.show_bar(self.feeding, self.stats['feeding'], self.satiety_bar_rect, SATIETY_COLOR)
-        self.show_bar(self.happy, self.stats['happiness'], self.happy_bar_rect, HAPPY_COLOR)
-        self.show_bar(self.cleanliness, self.stats['cleanliness'], self.clear_bar_rect, CLEAR_COLOR)
+    def display(self,display):
+        self.show_bar(display,self.feeding, self.stats['feeding'], self.satiety_bar_rect, SATIETY_COLOR)
+        self.show_bar(display,self.happy, self.stats['happiness'], self.happy_bar_rect, HAPPY_COLOR)
+        self.show_bar(display,self.cleanliness, self.stats['cleanliness'], self.clear_bar_rect, CLEAR_COLOR)
 
     def update(self, deltatime, player_action):
         pass
