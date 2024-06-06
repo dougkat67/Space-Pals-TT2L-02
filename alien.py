@@ -75,98 +75,98 @@ class Alien(pygame.sprite.Sprite):
         # Render monster
         if self.monster_select == 1:
             animation = self.monster_sprite1.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()  #scale
-            screen.blit(animation, (270, 250)) # position
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()  #scale
+            screen.blit(animation, (250, 50)) # position
         elif self.monster_select == 2:
             animation = self.monster_sprite2.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
         elif self.monster_select == 3:
             animation = self.monster_sprite3.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 4:
             animation = self.monster_sprite4.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 5: #Day 2
             animation = self.monster_sprite2_1.get_frame(self.frame, 480, 600, 1, (0, 0, 0)) #area
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 150))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 6:
             animation = self.monster_sprite2_2.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 7:
             animation = self.monster_sprite2_3.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 8:
             animation = self.monster_sprite2_4.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
-        elif self.monster_select == 9: #Day 3
-            animation = self.monster_sprite3_1.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+        elif self.monster_select == 9: #Day 3 9-12
+            animation = self.monster_sprite3_1.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 10:
             animation = self.monster_sprite3_2.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 11:
             animation = self.monster_sprite3_3.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 12:
             animation = self.monster_sprite3_4.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
-        elif self.monster_select == 13: #Day 4
-            animation = self.monster_sprite3_1.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+        elif self.monster_select == 13: #Day 4 13-16
+            animation = self.monster_sprite4_1.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 14:
-            animation = self.monster_sprite3_2.get_frame(self.frame, 480, 480, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = self.monster_sprite4_2.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 15:
-            animation = self.monster_sprite3_3.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = self.monster_sprite4_3.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 16:
-            animation = self.monster_sprite3_4.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = self.monster_sprite4_4.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
-        elif self.monster_select == 17: #Day 5
-            animation = self.monster_sprite3_1.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+        elif self.monster_select == 17: #Day 5 17-20
+            animation = self.monster_sprite5_1.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 18:
-            animation = self.monster_sprite3_2.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = self.monster_sprite5_2.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 19:
-            animation = self.monster_sprite3_3.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = self.monster_sprite5_3.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))
 
         elif self.monster_select == 20:
-            animation = self.monster_sprite3_4.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
-            animation = pygame.transform.scale(animation, (250, 250)).convert_alpha()
-            screen.blit(animation, (270, 250))
+            animation = self.monster_sprite5_4.get_frame(self.frame, 480, 600, 1, (0, 0, 0))
+            animation = pygame.transform.scale(animation, (400, 400)).convert_alpha()
+            screen.blit(animation, (250, 50))

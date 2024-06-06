@@ -9,6 +9,8 @@ from button2 import Button2
 from button3 import Button3
 from setting import SCREEN_WIDTH, SCREEN_HEIGHT
 from ui import UI
+from setting import *
+
 
 
 class Game():
@@ -55,11 +57,19 @@ class Game():
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if self.button1.rect.collidepoint(event.pos): # Feeding
                         if self.ui.cleanliness >= 10 and self.ui.coin >= 1 :
-                            self.monster.monster_select = 2 if self.monster.monster_select < 5 else 6 if  self.monster.monster_select < 9 else 10 if  self.monster.monster_select < 13 else 14 
+                            self.monster.monster_select = 2 if self.monster.monster_select < 5 else 6 if  self.monster.monster_select < 9 else 10 if  self.monster.monster_select < 13 else 14  if  self.monster.monster_select < 17 else 18 
                             self.last_button_click_time = current_time
                             self.ui.feeding = min(self.ui.feeding + 20, self.ui.stats['feeding']) # Feeding 
                             self.ui.cleanliness = min(self.ui.cleanliness - 10, self.ui.stats['cleanliness']) # Cleanliness
                             self.ui.happy = min(self.ui.happy + 5, self.ui.stats['happiness']) # Happiness
+
+                            main_sound = pygame.mixer.Sound('audio/button.mp3')
+                            main_sound.set_volume(0.5)
+                            main_sound.play(loops = 0)
+
+                            second_sound = pygame.mixer.Sound('audio/eat.mp3')
+                            second_sound.set_volume(0.5)
+                            second_sound.play(loops = 0)
 
                             self.ui.coin -= 1
                         else :
@@ -68,11 +78,19 @@ class Game():
 
                     elif self.button2.rect.collidepoint(event.pos): # Cleanliness
                         if self.ui.feeding >= 10 and self.ui.coin >= 1 :
-                            self.monster.monster_select = 3 if self.monster.monster_select < 5 else 7 if  self.monster.monster_select < 9 else 11 if  self.monster.monster_select < 13 else 15
+                            self.monster.monster_select = 3 if self.monster.monster_select < 5 else 7 if  self.monster.monster_select < 9 else 11 if  self.monster.monster_select < 13 else 15 if  self.monster.monster_select < 17 else 19
                             self.last_button_click_time = current_time
                             self.ui.feeding = min(self.ui.feeding - 10, self.ui.stats['feeding'])
                             self.ui.cleanliness = min(self.ui.cleanliness + 20, self.ui.stats['cleanliness'])
                             self.ui.happy = min(self.ui.happy + 5, self.ui.stats['happiness'])
+
+                            main_sound = pygame.mixer.Sound('audio/button.mp3')
+                            main_sound.set_volume(0.5)
+                            main_sound.play(loops = 0)
+
+                            second_sound = pygame.mixer.Sound('audio/wash.mp3')
+                            second_sound.set_volume(0.5)
+                            second_sound.play(loops = 0)
 
                             self.ui.coin -= 1
                         else :
@@ -80,10 +98,14 @@ class Game():
 
                     elif self.button3.rect.collidepoint(event.pos): # Happiness
                         if self.ui.feeding >= 20 and self.ui.coin >= 1 :
-                            self.monster.monster_select = 4 if self.monster.monster_select < 5 else 8 if  self.monster.monster_select < 9 else 12 if  self.monster.monster_select < 13 else 16
+                            self.monster.monster_select = 4 if self.monster.monster_select < 5 else 8 if  self.monster.monster_select < 9 else 12 if  self.monster.monster_select < 13 else 16 if  self.monster.monster_select < 17 else 20
                             self.ui.feeding = min(self.ui.feeding - 20, self.ui.stats['feeding'])
                             self.ui.cleanliness = min(self.ui.cleanliness + 5, self.ui.stats['cleanliness'])
                             self.ui.happy = min(self.ui.happy + 15, self.ui.stats['happiness'])
+
+                            main_sound = pygame.mixer.Sound('audio/button.mp3')
+                            main_sound.set_volume(0.5)
+                            main_sound.play(loops = 0)
 
                             self.ui.coin -= 1
                         else :
@@ -101,32 +123,49 @@ class Game():
                 self.ui.reset_stats()
                 self.monster.monster_select = 5 
                 self.day += 1
+                print(self.day)
+                main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
+                main_sound.set_volume(1)
+                main_sound.play(loops = 0)
                 
                 
             elif all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 2  : # Day3
                 self.ui.reset_stats()
                 self.monster.monster_select = 9 
                 self.day += 1
+                print(self.day)
+                main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
+                main_sound.set_volume(1)
+                main_sound.play(loops = 0)
 
             elif all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 3  : # Day4
                 self.ui.reset_stats()
                 self.monster.monster_select = 13 
                 self.day += 1
+                print(self.day)
+                main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
+                main_sound.set_volume(1)
+                main_sound.play(loops = 0)
 
             elif all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 4  : # Day5
-                self.ui.reset_stats()
+                
                 self.monster.monster_select = 17 
                 self.day += 1
+                print(self.day)
+                main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
+                main_sound.set_volume(1)
+                main_sound.play(loops = 0)
+            
 
             if self.monster.monster_select in [2, 3, 4] and current_time - self.last_button_click_time >= 3000:
                 self.monster.monster_select = 1
-            elif self.monster.monster_select in [6, 7, 8] and current_time - self.last_button_click_time >= 3000:
+            if self.monster.monster_select in [6, 7, 8] and current_time - self.last_button_click_time >= 3000:
                 self.monster.monster_select = 5
-            elif self.monster.monster_select in [10, 11, 12] and current_time - self.last_button_click_time >= 3000:
+            if self.monster.monster_select in [10, 11, 12] and current_time - self.last_button_click_time >= 3000:
                 self.monster.monster_select = 9
-            elif self.monster.monster_select in [14, 15, 16] and current_time - self.last_button_click_time >= 3000:
+            if self.monster.monster_select in [14, 15, 16] and current_time - self.last_button_click_time >= 3000:
                 self.monster.monster_select = 13
-            elif self.monster.monster_select in [18, 19, 20] and current_time - self.last_button_click_time >= 3000:
+            if self.monster.monster_select in [18, 19, 20] and current_time - self.last_button_click_time >= 3000:
                 self.monster.monster_select = 17
 
             if self.current_scene == "game":

@@ -9,8 +9,8 @@ class UI:
         self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
 
         # bar setup
-        self.satiety_bar_rect = pygame.Rect(10, 10, FEEDING_BAR_WIDTH, BAR_HEIGHT)
-        self.happy_bar_rect = pygame.Rect(10, 34, HAPPINESS_BAR_WIDTH, BAR_HEIGHT)
+        self.satiety_bar_rect = pygame.Rect(10, 34, FEEDING_BAR_WIDTH, BAR_HEIGHT)
+        self.happy_bar_rect = pygame.Rect(10, 10, HAPPINESS_BAR_WIDTH, BAR_HEIGHT)
         self.clear_bar_rect = pygame.Rect(10, 54, HAPPINESS_BAR_WIDTH, BAR_HEIGHT)
 
         # stats
