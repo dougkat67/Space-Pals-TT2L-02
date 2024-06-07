@@ -232,7 +232,7 @@ coin_position = (765, 6)
 timer_text_rect = timer_text.get_rect(topright=(screen_width - 130, 10 + collected_text.get_height() + 5))
 
 running = True
-initial_time = 10 # initial time(30 seconds)
+initial_time = 10 
 start_time = pygame.time.get_ticks() // 1000 # current time in seconds
 
 while running and attempt <= num_hearts:

@@ -28,15 +28,14 @@ class Player(pygame.sprite.Sprite):
             self.image = self.images[self.image_index]
 
     def move(self, dx, dy):
-        # move the player
-        self.rect.x += dx * self.grid_size
-        self.rect.y += dy * self.grid_size
-
-        # move each axis separately. Note that this checks for collision
-        if dx != 0:
-            self.move_single_axis(dx, 0)
-        if dy != 0:
-            self.move_single_axis(0, dy)
+        # calculate the change in position based on grid size
+        move_amount_x = dx * self.grid_size
+        move_amount_y = dy * self.grid_size
+        # update the center coordinates of the alien
+        self.rect.centerx += move_amount_x
+        self.rect.centery += move_amount_y
+        # check for collision and the position
+        self.move_single_axis(dx, dy)
 
     def move_single_axis(self, dx, dy):
         # move the rect
@@ -48,11 +47,11 @@ class Player(pygame.sprite.Sprite):
             if self.rect.colliderect(wall.rect):
                 if dx > 0: # moving right; hit left side of the wall
                     self.rect.right = wall.rect.left
-                if dx < 0: # moving left; hit right side of the wall
+                elif dx < 0: # moving left; hit right side of the wall
                     self.rect.left = wall.rect.right
-                if dy > 0: # moving down; hit top side of the wall
+                elif dy > 0: # moving down; hit top side of the wall
                     self.rect.bottom = wall.rect.top
-                if dy < 0: # moving up; hit bottom side of the wall
+                elif dy < 0: # moving up; hit bottom side of the wall
                     self.rect.top = wall.rect.bottom
 
 # nice class to hold a wall rect
@@ -71,15 +70,17 @@ screen_width, screen_height = 1000,500
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 alien_images = [
-    pygame.transform.scale(pygame.image.load('images/alien_0.png'), (45, 45)),
-    pygame.transform.scale(pygame.image.load('images/alien_1.png'), (45, 45)),
-    pygame.transform.scale(pygame.image.load('images/alien_2.png'), (45, 45)),
-    pygame.transform.scale(pygame.image.load('images/alien_3.png'), (45, 45))
+    pygame.transform.scale(pygame.image.load('images/alien2_0.png'), (45, 45)),
+    pygame.transform.scale(pygame.image.load('images/alien2_1.png'), (45, 45)),
+    pygame.transform.scale(pygame.image.load('images/alien2_2.png'), (45, 45)),
+    pygame.transform.scale(pygame.image.load('images/alien2_3.png'), (45, 45))
     ]
 
 clock = pygame.time.Clock()
 walls = [] # list to hold the walls
-grid_cell_size = 50
+grid_cell_size = 25
+
+heart_image = pygame.image.load('images/heart.png')
 
 coin_images = [
     pygame.image.load('images/coin_0.png'),
@@ -95,39 +96,40 @@ coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_widt
 spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (grid_cell_size, grid_cell_size))
 
 # holds the level layout in a list of strings
-# use 40walls/row, 20walls/column
-level = [
+# 40x20 (25pixels per grid cell)
+level2 = [
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-    "W  WWWWWWWWWW W       WWWWWW           W",
-    "WW WWWWWWWWWW W WW WW WW   W WWWWWWWWW W",
-    "WW WW      WW W WW WW WW W       WW    W",
-    "W     WWWW WW W WW WW WW WWWW WW WW    W",
-    "W WWWWWWWW      WW WW    WWWW WW    WWWW",
-    "W  WWWWWWW WWWWWWW WWWWW WWWW   WW WWWWW",
-    "WW WWWWWWW WWWWW W W     WWWWWW WW WWWWW",
-    "WW WWWW       WW   W WWWW          WWWWW",
-    "WW    W WWWWW WWWW W   WWWWW WWWWW    WW",
-    "WWWWW W WWWWW WWWW WWW WWWWW    WWWWW WW",
-    "WWWWW WWWWWWW      WWW     W WW WWWWW WW",
-    "WWWWW WWWWWWW WW WWWWWWWWW WWWW W     WW",
-    "W     WWWW    WW WWWWWWWWW    W WVWW WWW",
-    "W WWWWWW   WWWWW     WWWWW WW WWW WW WWW",
-    "W     WW WWWW  WWWW WWW    WW WWW WW WWW",
-    "WWWWWWWW WWWW WWWWW WWWWWWWWW     WW EWW",
-    "WWWWWWWW      WWWWW WWWWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "W  W                     W             W",
+    "W  W                     W             W",
+    "W  W  WWWWWW   WWWWWWWW  W  WWWWWWWWW  W",
+    "W        W            W  W          W  W",
+    "W        W            W  W          W  W",
+    "WWWWWWW  W  WWWW   W  W  W   WW    WW  W",
+    "W     W  W  W      W  W       W  W  W  W",
+    "W     W  W  W      W  W       W  W  W  W",
+    "W  W  W  W  W  W   W          W  W     W",
+    "W  W  W  W  W  W   W          W  W     W",
+    "W  W  W  W  W  W  WWWWWWWWWWWWW  WWWWWWW",
+    "W  W        W  W  W                    W",
+    "W  W        W  W  W                    W",
+    "W  WWWWWWW  W  W  W  W   WWWWWWWWWWWWWWW",
+    "W           W  W     W                 W",
+    "W           W  W     W                EW",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
 ]
 
 # Calculate the size of each grid cell based on the screen dimensions and number of cells
-num_cols = len(level[0])
-num_rows = len(level)
+num_cols = len(level2[0])
+num_rows = len(level2)
 grid_cell_size = 25
 screen_width = num_cols * grid_cell_size
 screen_height = num_rows * grid_cell_size
+end_rect = None
 
 # Parse the level string above. W = wall, E = exit
-for y, row in enumerate(level):
+for y, row in enumerate(level2):
     for x, col in enumerate(row):
         if col == "W":
             Wall((x * grid_cell_size, y * grid_cell_size))
@@ -135,19 +137,73 @@ for y, row in enumerate(level):
             end_rect = pygame.Rect(x * grid_cell_size, y * grid_cell_size, grid_cell_size, grid_cell_size)
             pygame.draw.rect(screen, (255, 165, 0), end_rect) # Draw the exit
 
-# create coins at specific positions
-coins = [Coin(grid_cell_size,(7, 4), coin_images),
-         ]
+font = pygame.font.Font(None, 36)
+attempt = 1
+attempt_text = font.render(f"Attempt : {attempt}", True, (255, 255, 255))
+attempt_text_rect = attempt_text.get_rect(center = (screen_width // 2, 25))
+screen.blit(attempt_text, attempt_text_rect)
 
-# alien's initial position
-initial_grid_x = 1
-initial_grid_y = 2
-player_initial_position = (initial_grid_x * grid_cell_size, initial_grid_y * grid_cell_size)
-player = Player(alien_images, grid_cell_size, animation_speed=0.9, initial_position=player_initial_position)  # Create the player with adjusted initial position
+num_hearts = 3
+heart_spacing = 40
+heart_position = (10, 10)
+def display_hearts(attempt):
+    for i in range(num_hearts):
+        if attempt == 1:
+            screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+        elif attempt == 2:
+            if i < 2:
+                screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+            else:
+                # Convert the heart image to black and white
+                bw_heart_image = heart_image.convert()
+                bw_heart_image = bw_heart_image.convert_alpha()
+                bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
+                screen.blit(bw_heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+        elif attempt == 3:
+            if i == 0:
+                screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+            else:
+                # Convert the heart image to black and white
+                bw_heart_image = heart_image.convert()
+                bw_heart_image = bw_heart_image.convert_alpha()
+                bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
+                screen.blit(bw_heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+
+# create coins at specific positions (20 coins in every level)
+coins = [Coin(grid_cell_size,(1, 6), coin_images),
+         Coin(grid_cell_size,(1, 17), coin_images),
+         Coin(grid_cell_size, (4, 14), coin_images),
+         Coin(grid_cell_size,(4, 9), coin_images),
+         Coin(grid_cell_size,(7, 3), coin_images),
+         Coin(grid_cell_size, (9, 14), coin_images),
+         Coin(grid_cell_size, (10, 7), coin_images),
+         Coin(grid_cell_size, (13, 9), coin_images),
+         Coin(grid_cell_size, (13, 15), coin_images),
+         Coin(grid_cell_size, (16, 3), coin_images),
+         Coin(grid_cell_size, (20, 14), coin_images),
+         Coin(grid_cell_size, (20, 11), coin_images),
+         Coin(grid_cell_size, (22, 17), coin_images),
+         Coin(grid_cell_size, (23, 6), coin_images),
+         Coin(grid_cell_size, (29, 9), coin_images),
+         Coin(grid_cell_size, (31, 14), coin_images),
+         Coin(grid_cell_size, (34, 11), coin_images),
+         Coin(grid_cell_size, (34, 17), coin_images),
+         Coin(grid_cell_size, (34, 6), coin_images),
+         Coin(grid_cell_size,(37, 3), coin_images),
+         ]
+coin_positions = [(1, 6), (1, 17), (4, 14), (4, 9), (7, 3), 
+                  (9, 14), (10, 7), (13, 9), (13, 15), (16, 3), 
+                  (20, 14), (20, 11), (22, 17), (23, 6), (29, 9),
+                  (31, 14), (34, 11), (34, 17), (34, 6), (37, 3)
+                  ]
+def reset_coins(coin_positions):
+    global coins
+    coins = [Coin(grid_cell_size, pos, coin_images) for pos in coin_positions]
+
 
 # set up the alien sprite
 grid_cell_size = 25
-player_initial_position = (1 * grid_cell_size, 2 * grid_cell_size)
+player_initial_position = (1 * grid_cell_size, 3 * grid_cell_size)
 player = Player(alien_images, grid_cell_size, initial_position=player_initial_position)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
@@ -161,7 +217,7 @@ font = pygame.font.Font(None, 36)
 coin_image = pygame.image.load('images/coin_0.png')
 
 # initialize variables for the timer
-time_limit = 10 # 10 seconds
+time_limit = 20 # ? seconds
 current_time = 0
 timer_font = pygame.font.Font(None, 36)
 
@@ -174,20 +230,21 @@ end_message_duration = 3000  # 3 seconds in milliseconds
 end_message_display_time = 0  # Variable to track how long the end message has been displayed
 end_message_font = pygame.font.Font(None, end_message_font_size)
 
+timer_text = timer_font.render("", True, (255, 255, 255))
+collected_text = font.render("", True, (255, 255, 255))
+coin_position = (765, 6)
+timer_text_rect = timer_text.get_rect(topright=(screen_width - 130, 10 + collected_text.get_height() + 5))
+
 running = True
-initial_time = 10 # initial time(30 seconds)
+initial_time = 20
 start_time = pygame.time.get_ticks() // 1000 # current time in seconds
-while running:
-    # calculate delta time
-    dt = clock.tick(60) / 1000.0 # convert milliseconds to seconds
+
+while running and attempt <= num_hearts:
+    # Calculate delta time
+    dt = clock.tick(60) / 1000.0  # Convert milliseconds to seconds
     current_time += dt
 
-    # check if the timer has reached the time limit
-    if current_time >= time_limit:
-        time_up = True
-        running = False
-
-    # handle events
+    # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -196,83 +253,96 @@ while running:
             if pressed_keys[pygame.K_a]:
                 player.move(-1, 0)  # Move left
             elif pressed_keys[pygame.K_d]:
-                player.move(1, 0)   # Move right
+                player.move(1, 0)  # Move right
             elif pressed_keys[pygame.K_w]:
                 player.move(0, -1)  # Move up
             elif pressed_keys[pygame.K_s]:
-                player.move(0, 1)   # Move down
+                player.move(0, 1)  # Move down
 
-    # check for collision with the exit
-    if player.rect.colliderect(end_rect):
+    # Check for collision with the exit
+    if end_rect is not None and player.rect.colliderect(end_rect):
         player_won = True
         running = False
 
-    # check for collision with coins
+    # Check for collision with coins and collect them
     for coin in coins:
         if player.rect.colliderect(coin.rect):
             collected_coins += coin.collect()
-            coins = [c for c in coins if c is not coin] # remove collected coin from the list
+            coins.remove(coin)
 
-    # update all sprites
+    # Update all sprites
     all_sprites.update()
 
-    # fill the screen with bg image
+    # Fill the screen with background color
     screen.fill((173, 216, 230))
 
-    # draw all sprites
-    all_sprites.draw(screen)
-
-    # draw the walls
+    # Draw walls, exit, player, and coins
     for wall in walls:
         pygame.draw.rect(screen, (0, 0, 0), wall.rect)
-
-    # draw the exit
-    screen.blit(spaceship_image, end_rect)
-
-    # draw the player
-    screen.blit(player.image, player.rect)
+    if end_rect is not None:
+        screen.blit(spaceship_image, end_rect)
+        screen.blit(player.image, player.rect)
     for coin in coins:
-        coin.update(dt) # update coin animation
-        screen.blit(coin.image, coin.rect) # render coin image on screen
+        coin.update(dt)
+        screen.blit(coin.image, coin.rect)
 
-    # display collected coins using coin image
-    coin_position = (10, 10)
+    # Display attempt text
+    screen.blit(attempt_text, attempt_text_rect)
+
+    # Display collected coins count
     screen.blit(coin_image, coin_position)
+    collected_text = font.render(f"Collected: {collected_coins:02d}/{total_coins}", True, (255, 255, 255))
+    screen.blit(collected_text, (screen_width - collected_text.get_width() - 10, 10))
 
-    # display collected coins at the top left corner
-    collected_text = font.render(f"Collected: {collected_coins}/{total_coins}", True, (255, 255, 255))
-    screen.blit(collected_text, (50,10))
-
-    # Display timer text
-    # calculate remaining time
+    # Display remaining time
     remaining_time = max(time_limit - current_time, 0)
     timer_text = timer_font.render(f"Time: {int(remaining_time)}", True, (255, 255, 255))
-    timer_text_rect = timer_text.get_rect(center=(screen_width // 2, 30))  # Centered at the top middle of the screen
     screen.blit(timer_text, timer_text_rect)
 
     # Display end game messages if conditions are met
     if time_up and not player_won:
-        end_text = pygame.font.Font(None, end_message_font_size).render("Time's up!", True, (255, 0, 0))  # Red color for time's up message
-        end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
-        screen.blit(end_text, end_text_rect)
+        message_color = (255, 0, 0)  # Red for time's up
+        message_text = "Time's up!"
     elif player_won:
-        end_text = pygame.font.Font(None, end_message_font_size).render("You win!", True, (0, 255, 0))  # Green color for you win message
+        message_color = (0, 255, 0)  # Green for win message
+        message_text = "You win!"
+
+    if time_up or player_won:
+        end_text = pygame.font.Font(None, end_message_font_size).render(message_text, True, message_color)
         end_text_rect = end_text.get_rect(center=(screen_width // 2, screen_height // 2))
         screen.blit(end_text, end_text_rect)
 
-    # update the display
+    # check if time is up
+    if current_time >= time_limit:
+        time_up = True
+
+    # Check end game conditions
+    if time_up and not player_won:
+        attempt += 1
+        if attempt <= num_hearts:
+            # reset game state for next attempt
+            player.rect.topleft = player_initial_position
+            current_time = 0
+            time_up = False
+            collected_coins = 0
+            # update attempt text for the next attempt
+            attempt_text = font.render(f"Attempt : {attempt}", True, (255, 255, 255))
+            screen.blit(attempt_text, attempt_text_rect)
+            reset_coins(coin_positions)
+        else:
+            running = False  # Player loses if hearts are exhausted
+
+    if player_won or attempt > num_hearts:
+        running = False  # End game if player won or attempted 3 times
+
+    # Display hearts for attempts
+    display_hearts(attempt)
+
+    # Update display
     pygame.display.flip()
 
-    # Check if an end game message is being displayed
-    if (time_up and not player_won) or player_won:
-        # Get the current time
-        current_time = pygame.time.get_ticks()
-
-        # Check if the end message has been displayed for the desired duration
-        if current_time - end_message_display_time >= end_message_duration:
-            running = False  # Exit the game loop and quit the game
-
-    # cap the frame rate
+    # Cap the frame rate
     clock.tick(60)
 
+# Quit Pygame
 pygame.quit()
