@@ -139,7 +139,7 @@ for y, row in enumerate(level2):
 
 font = pygame.font.Font(None, 36)
 attempt = 1
-attempt_text = font.render(f"Attempt : {attempt}", True, (255, 255, 255))
+attempt_text = font.render(f"Attempt: {attempt}/3", True, (255, 255, 255))
 attempt_text_rect = attempt_text.get_rect(center = (screen_width // 2, 25))
 screen.blit(attempt_text, attempt_text_rect)
 
@@ -326,7 +326,7 @@ while running and attempt <= num_hearts:
             time_up = False
             collected_coins = 0
             # update attempt text for the next attempt
-            attempt_text = font.render(f"Attempt : {attempt}", True, (255, 255, 255))
+            attempt_text = font.render(f"Attempt: {attempt}/3", True, (255, 255, 255))
             screen.blit(attempt_text, attempt_text_rect)
             reset_coins(coin_positions)
         else:
