@@ -106,7 +106,7 @@ level2 = [
     "W  W  WWWWWW   WWWWWWWW  W  WWWWWWWWW  W",
     "W        W            W  W          W  W",
     "W        W            W  W          W  W",
-    "WWWWWWW  W  WWWW   W  W  W   WW    WW  W",
+    "WWWWWWW  W  WWWW   W  W  WW  WW  W  W  W",
     "W     W  W  W      W  W       W  W  W  W",
     "W     W  W  W      W  W       W  W  W  W",
     "W  W  W  W  W  W   W          W  W     W",
