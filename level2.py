@@ -154,7 +154,7 @@ coin_images = [
 
 coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_width, grid_cell_size) for y in range(0, screen_height, grid_cell_size)]
 
-spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (grid_cell_size, grid_cell_size))
+spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (90, 70))
 
 # holds the level layout in a list of strings
 # 40x20 (25pixels per grid cell)
@@ -176,8 +176,8 @@ level2 = [
     "W  W        W  W  W                    W",
     "W  W        W  W  W                    W",
     "W  WWWWWWW  W  W  W  W   WWWWWWWWWWWWWWW",
+    "W           W  W     W             E   W",
     "W           W  W     W                 W",
-    "W           W  W     W                EW",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
 ]
 
