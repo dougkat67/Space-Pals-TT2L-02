@@ -18,6 +18,8 @@ class Player(pygame.sprite.Sprite):
         # ensure initial_position is a tuple
         self.rect = self.image.get_rect(topleft=initial_position if isinstance(initial_position, tuple) else (0, 0))
         self.grid_size = grid_size
+        self.num_collisions = 0  # Track the number of collisions with enemies
+        self.heart_images = [heart_image.copy() for _ in range(num_hearts)]  # Copy heart images
 
     def update(self):
         # update the player's image for animation
@@ -53,6 +55,65 @@ class Player(pygame.sprite.Sprite):
                     self.rect.bottom = wall.rect.top
                 elif dy < 0: # moving up; hit bottom side of the wall
                     self.rect.top = wall.rect.bottom
+
+    def collide_with_enemy(self):
+        if self.num_collisions < num_hearts:
+            # Convert corresponding heart image to black and white
+            bw_heart_image = self.heart_images[self.num_collisions].convert()
+            bw_heart_image = bw_heart_image.convert_alpha()
+            bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
+            self.heart_images[self.num_collisions] = bw_heart_image
+        self.num_collisions += 1
+    
+        if self.num_collisions >= num_hearts:
+            # End game loop if all hearts are black and white
+            running = False  # Assuming 'running' is accessible here
+
+
+    def draw_hearts(self, screen):
+        for i, heart_image in enumerate(self.heart_images):
+            screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, image, grid_size, walls, player, initial_positions):
+        super().__init__()
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.grid_size = grid_size
+        self.walls = walls
+        self.player = player
+        self.positions = initial_positions
+        self.current_position_index = 0
+        self.rect.topleft = self.positions[self.current_position_index]
+        self.direction = 1  # 1 for right, -1 for left
+        self.speed = 0.8  # Adjust this value to control the speed
+
+    def update(self):
+        # Move enemy left or right
+        self.rect.x += self.direction * self.speed
+
+        # Check collision with walls
+        for wall in self.walls:
+            if self.rect.colliderect(wall.rect):
+                # If collision with left side of the wall and moving right
+                if self.direction == 1 and self.rect.right >= wall.rect.left and self.rect.left < wall.rect.left:
+                    self.direction = -1  # Change direction to left
+                    self.rect.right = wall.rect.left  # Move back to avoid overlapping
+                # If collision with right side of the wall and moving left
+                elif self.direction == -1 and self.rect.left <= wall.rect.right and self.rect.right > wall.rect.right:
+                    self.direction = 1  # Change direction to right
+                    self.rect.left = wall.rect.right  # Move back to avoid overlapping
+                    break
+
+        # Check collision with player
+        if self.rect.colliderect(self.player.rect):
+            self.player.collide_with_enemy()
+
+        # Update current position index if enemy reaches the end of the path
+        if self.rect.x < min(self.positions, key=lambda x: x[0])[0] or self.rect.x > max(self.positions, key=lambda x: x[0])[0]:
+            self.current_position_index = (self.current_position_index + 1) % len(self.positions)
+            self.rect.topleft = self.positions[self.current_position_index]
 
 # nice class to hold a wall rect
 class Wall(object):
@@ -146,28 +207,6 @@ screen.blit(attempt_text, attempt_text_rect)
 num_hearts = 3
 heart_spacing = 40
 heart_position = (10, 10)
-def display_hearts(attempt):
-    for i in range(num_hearts):
-        if attempt == 1:
-            screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
-        elif attempt == 2:
-            if i < 2:
-                screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
-            else:
-                # Convert the heart image to black and white
-                bw_heart_image = heart_image.convert()
-                bw_heart_image = bw_heart_image.convert_alpha()
-                bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
-                screen.blit(bw_heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
-        elif attempt == 3:
-            if i == 0:
-                screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
-            else:
-                # Convert the heart image to black and white
-                bw_heart_image = heart_image.convert()
-                bw_heart_image = bw_heart_image.convert_alpha()
-                bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
-                screen.blit(bw_heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
 
 # create coins at specific positions (20 coins in every level)
 coins = [Coin(grid_cell_size,(1, 6), coin_images),
@@ -207,6 +246,11 @@ player_initial_position = (1 * grid_cell_size, 3 * grid_cell_size)
 player = Player(alien_images, grid_cell_size, initial_position=player_initial_position)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
+
+enemy_image = pygame.transform.scale(pygame.image.load('images/enemy.png'),(67.75, 38.75))
+enemy_initial_position = [(38 * grid_cell_size, 14 * grid_cell_size), (5 * grid_cell_size, 3 * grid_cell_size)]
+enemy = Enemy(enemy_image, grid_cell_size, walls, player, enemy_initial_position)
+all_sprites.add(enemy)
 
 # variables to track collected coins
 collected_coins = 0
@@ -272,11 +316,12 @@ while running and attempt <= num_hearts:
 
     # Update all sprites
     all_sprites.update()
+    enemy.update()
 
-    # Fill the screen with background color
+    # fill the screen with background color
     screen.fill((173, 216, 230))
 
-    # Draw walls, exit, player, and coins
+    # draw walls, exit, player, and coins
     for wall in walls:
         pygame.draw.rect(screen, (0, 0, 0), wall.rect)
     if end_rect is not None:
@@ -286,20 +331,23 @@ while running and attempt <= num_hearts:
         coin.update(dt)
         screen.blit(coin.image, coin.rect)
 
-    # Display attempt text
+    # display enemy
+    screen.blit(enemy.image, enemy.rect)
+
+    # display attempt text
     screen.blit(attempt_text, attempt_text_rect)
 
-    # Display collected coins count
+    # display collected coins count
     screen.blit(coin_image, coin_position)
     collected_text = font.render(f"Collected: {collected_coins:02d}/{total_coins}", True, (255, 255, 255))
     screen.blit(collected_text, (screen_width - collected_text.get_width() - 10, 10))
 
-    # Display remaining time
+    # display remaining time
     remaining_time = max(time_limit - current_time, 0)
     timer_text = timer_font.render(f"Time: {int(remaining_time)}", True, (255, 255, 255))
     screen.blit(timer_text, timer_text_rect)
 
-    # Display end game messages if conditions are met
+    # display end game messages if conditions are met
     if time_up and not player_won:
         message_color = (255, 0, 0)  # Red for time's up
         message_text = "Time's up!"
@@ -316,7 +364,7 @@ while running and attempt <= num_hearts:
     if current_time >= time_limit:
         time_up = True
 
-    # Check end game conditions
+    # check end game conditions
     if time_up and not player_won:
         attempt += 1
         if attempt <= num_hearts:
@@ -335,13 +383,12 @@ while running and attempt <= num_hearts:
     if player_won or attempt > num_hearts:
         running = False  # End game if player won or attempted 3 times
 
-    # Display hearts for attempts
-    display_hearts(attempt)
-
-    # Update display
+    player.draw_hearts(screen)
+    
+    # update display
     pygame.display.flip()
 
-    # Cap the frame rate
+    # cap the frame rate
     clock.tick(60)
 
 # Quit Pygame
