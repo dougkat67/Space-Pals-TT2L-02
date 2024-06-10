@@ -144,12 +144,12 @@ grid_cell_size = 25
 heart_image = pygame.image.load('images/heart.png')
 
 coin_images = [
-    pygame.image.load('images/coin_0.png'),
-    pygame.image.load('images/coin_1.png'),
-    pygame.image.load('images/coin_2.png'),
-    pygame.image.load('images/coin_3.png'),
-    pygame.image.load('images/coin_4.png'),
-    pygame.image.load('images/coin_5.png')
+    pygame.transform.scale(pygame.image.load('images/coin_0.png'), (20, 20)),
+    pygame.transform.scale(pygame.image.load('images/coin_1.png'), (20, 20)),
+    pygame.transform.scale(pygame.image.load('images/coin_2.png'), (20, 20)),
+    pygame.transform.scale(pygame.image.load('images/coin_3.png'), (20, 20)),
+    pygame.transform.scale(pygame.image.load('images/coin_4.png'), (20, 20)),
+    pygame.transform.scale(pygame.image.load('images/coin_5.png'), (20, 20))
     ]
 
 coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_width, grid_cell_size) for y in range(0, screen_height, grid_cell_size)]
@@ -163,20 +163,20 @@ level2 = [
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
     "W                                      W",
-    "W WWWWWWWWWWW WWWWW WWWWWW WWWWWWWWWWW W",
+    "W WWWWWWWWWW  WWWW  WWWWWW  WWWWWWWWWW W",
     "W W                      W  W W      W W",
-    "W W WWWWW WWWWWWWWWWWWW WW WW W    W W W",
+    "W W WWWWW WWWWWWWWWWWW  WW WW W    W W W",
     "W W W           W        W  W W WW W   W",
-    "W W W WWWWWWWWW W WWWW   WW W   W  WWW W",
+    "W W W WWWWWWWWW W WWWW   W  W   W  WWW W",
     "W W W W         W WE W W        W    W W",
-    "W W   W W  WWW  W WW W WW WWWWWWWWWW W W",
+    "W     W W  WWW  W W  W WW WWWWWWWWWW W W",
     "W   W W WW             W       W     W W",
     "W W   W  W  WWW  WWWWWWWWWWWWW W WWWWW W",
     "W W W WW                 W   W W   W   W",
     "WWW W    WWWW  WWW  W  W    WW   W W W W",
     "W W WW W WW      W WW WWWWW W  WWW W W W",
     "W W    W    W  W W  W          W     W W",
-    "W WW WWWWWWWW WWWWWWWWW WWWWWWWWWW WWW W",
+    "W WW  WWWWWWW  WWWWWWWW  WWWWWWWW  WWW W",
     "W                                      W",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
 ]
@@ -247,8 +247,9 @@ player = Player(alien_images, grid_cell_size, initial_position=player_initial_po
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
-enemy_image = pygame.transform.scale(pygame.image.load('images/enemy.png'),(45, 25))
-enemy_initial_position = [(3 * grid_cell_size, 19 * grid_cell_size), (35 * grid_cell_size, 18 * grid_cell_size)]
+enemy_image = pygame.transform.scale(pygame.image.load('images/enemy.png'),(42, 22))
+enemy_initial_position = [(3 * grid_cell_size, 19 * grid_cell_size), (35 * grid_cell_size, 18 * grid_cell_size),
+                          (3 * grid_cell_size, 5 * grid_cell_size), (24 * grid_cell_size, 5 * grid_cell_size)]
 enemy = Enemy(enemy_image, grid_cell_size, walls, player, enemy_initial_position)
 all_sprites.add(enemy)
 
@@ -261,7 +262,7 @@ font = pygame.font.Font(None, 36)
 coin_image = pygame.image.load('images/coin_0.png')
 
 # initialize variables for the timer
-time_limit = 20 # ? seconds
+time_limit = 30 # ? seconds
 current_time = 0
 timer_font = pygame.font.Font(None, 36)
 
@@ -280,7 +281,7 @@ coin_position = (765, 6)
 timer_text_rect = timer_text.get_rect(topright=(screen_width - 130, 10 + collected_text.get_height() + 5))
 
 running = True
-initial_time = 20
+initial_time = 30
 start_time = pygame.time.get_ticks() // 1000 # current time in seconds
 
 while running and attempt <= num_hearts:

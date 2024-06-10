@@ -63,7 +63,7 @@ class Player(pygame.sprite.Sprite):
             bw_heart_image = bw_heart_image.convert_alpha()
             bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
             self.heart_images[self.num_collisions] = bw_heart_image
-        self.num_collisions += 1
+            self.num_collisions += 1
     
         if self.num_collisions >= num_hearts:
             # End game loop if all hearts are black and white
@@ -154,7 +154,7 @@ coin_images = [
 
 coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_width, grid_cell_size) for y in range(0, screen_height, grid_cell_size)]
 
-spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (90, 70))
+spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (85, 50))
 
 # holds the level layout in a list of strings
 # 40x20 (25pixels per grid cell)
