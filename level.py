@@ -34,7 +34,7 @@ class Game():
         self.button2 = Button2((110, 350), self.visible_sprites)
         self.button3 = Button3((110, 350), self.visible_sprites)
         self.ui = UI()
-        
+
         #Sound 
         main_sound = pygame.mixer.Sound('audio/song.mp3')
         main_sound.set_volume(0.5)
@@ -124,6 +124,7 @@ class Game():
             self.ui.display()
 
             
+            # Alien grow
 
             if all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 1  : # Day2
                 self.ui.reset_stats()
@@ -184,10 +185,6 @@ class Game():
         time_surface = self.font.render(f"Time: {self.elapsed_time} seconds", True, (0, 0, 0))
         time_rect = time_surface.get_rect(topright=(SCREEN_WIDTH - 20, 20))
         self.screen.blit(time_surface, time_rect)
-
-    
-
-    
 
     def run(self):
         self.update()
