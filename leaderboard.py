@@ -1,13 +1,12 @@
 import pygame
 import os
 import json
-from level import Game
+# from level import Pet
 from setting import *
 
-class ButtonGame:
-    def __init__(self):
+class ButtonGame():
+    def __init__(self):     
         pygame.init()
-        
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption('Pet Game')
         self.clock = pygame.time.Clock()
@@ -16,8 +15,9 @@ class ButtonGame:
         self.start_time = pygame.time.get_ticks()
         self.elapsed_time = 0
         
-        self.game = Game()  
-        
+lf.game = Pet
+        self.game = "main.menu" # set main menu as game
+      
         self.current_scene = "main_menu"
         self.leaderboard = []
 
@@ -62,21 +62,17 @@ class ButtonGame:
             self.elapsed_time = (pygame.time.get_ticks() - self.start_time) // 1000
 
     def render(self):
-        self.screen.fill(self.white)
+        self.screen.fill("white")
         if self.current_scene == "main_menu":
             self.render_main_menu()
         elif self.current_scene == "leaderboard":
             self.render_leaderboard()
         pygame.display.flip()
 
-    def render_main_menu(self):
-        self.button_rect = pygame.draw.rect(
-            self.screen, 
-            self.red, 
-            (self.screen_width // 2 - 50, self.screen_height // 2 - 25, 100, 50)
-        )
+   
+
         time_surface = self.font.render(f"Time: {self.elapsed_time} seconds", True, (0, 0, 0))
-        time_rect = time_surface.get_rect(topright=(self.screen_width - 20, 20))
+        time_rect = time_surface.get_rect(topright=(SCREEN_WIDTH - 20, 20))
         self.screen.blit(time_surface, time_rect)
 
     def render_leaderboard(self):
@@ -84,7 +80,7 @@ class ButtonGame:
         sorted_leaderboard = sorted(self.leaderboard, key=lambda x: x["time"])
         for entry in sorted_leaderboard:
             text_surface = self.font.render(f"{entry['time']} seconds", True, (0, 0, 0))
-            text_rect = text_surface.get_rect(center=(self.screen_width // 2, text_y))
+            text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, text_y))
             self.screen.blit(text_surface, text_rect)
             text_y += 50
 

@@ -63,7 +63,7 @@ class Alien(pygame.sprite.Sprite):
         self.monster_sprite5_3 = pyelement.SpriteSheet(monster_sprite5_3_img)
         self.monster_sprite5_4 = pyelement.SpriteSheet(monster_sprite5_4_img)
 
-    def update(self, screen):
+    def update(self):
         # Animation
         self.animation_timer += 1
         if self.animation_timer >= self.animation_cooldown:
@@ -72,6 +72,7 @@ class Alien(pygame.sprite.Sprite):
         if self.frame >= 4:
             self.frame = 0
 
+    def render(self, screen):
         # Render monster
         if self.monster_select == 1:
             animation = self.monster_sprite1.get_frame(self.frame, 480, 480, 1, (0, 0, 0))

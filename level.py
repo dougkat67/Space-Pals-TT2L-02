@@ -10,15 +10,16 @@ from button3 import Button3
 from setting import SCREEN_WIDTH, SCREEN_HEIGHT
 from ui import UI
 from setting import *
+from states.state import State
+# from leaderboard import ButtonGame
 
 
 
-class Game():
-    def __init__(self):
-        pygame.init()
+class Pet(State):
+    def __init__(self, game):
+        super().__init__(game)
+        self.game = game
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption('Pet Game')
-        self.clock = pygame.time.Clock()
         self.visible_sprites = pygame.sprite.Group()
         self.font = pygame.font.Font(None, 36)
 
@@ -41,6 +42,11 @@ class Game():
         main_sound.play(loops = -1)
 
         # OTHER variable
+
+        self.elapsed_time = 0
+
+        # Day
+
         self.day = 1
 
         self.last_button_click_time = pygame.time.get_ticks() 
@@ -52,10 +58,15 @@ class Game():
 
         
 
-    def update(self):
-        while True:
+    def handle_events(self, events):
+        pass
+
+
+    def update(self,deltatime,actions):
+            self.monster.update()
             current_time = pygame.time.get_ticks()
             self.elapsed_time = (current_time - self.start_time) // 1000
+
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -117,13 +128,8 @@ class Game():
                             self.ui.coin -= 1
                         else :
                             pass
+                    
 
-            self.screen.blit(self.background, (0, 0))
-            self.monster.update(self.screen)
-            self.visible_sprites.draw(self.screen)
-            self.ui.display()
-
-            
             # Alien grow
 
             if all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 1  : # Day2
@@ -181,14 +187,32 @@ class Game():
             pygame.display.flip()
             self.clock.tick(60)
 
-    def render_game_timer(self): #display the timer
+
+
+        
+            
+
+            
+
+    
+    def render(self, display, font):
+        # Render the current game state
+        display.blit(self.background, (0, 0))
+        self.monster.render(display)
+        self.visible_sprites.draw(display)
+        self.ui.display(display)
+
+        if self.current_scene == "game":
+            self.render_game_timer(display)
+        elif self.current_scene == "leaderboard":
+            self.render_leaderboard(display)
+
+    def render_game_timer(self, display):
         time_surface = self.font.render(f"Time: {self.elapsed_time} seconds", True, (0, 0, 0))
-        time_rect = time_surface.get_rect(topright=(SCREEN_WIDTH - 20, 20))
-        self.screen.blit(time_surface, time_rect)
+        time_rect = time_surface.get_rect(topright=(self.screen_width - 20, 20))
+        display.blit(time_surface, time_rect)
+
 
     def run(self):
         self.update()
 
-if __name__ == "__main__":
-    game = Game()
-    game.run()
