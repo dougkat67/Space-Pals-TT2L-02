@@ -62,7 +62,6 @@ class Wall(object):
         self.rect = pygame.Rect(pos[0], pos[1], grid_cell_size, grid_cell_size)
 
 # initialise pygame
-os.environ["SDL_VIDEO_CENTERED"] = "1"
 pygame.init()
 
 # set up the display
@@ -94,7 +93,7 @@ coin_images = [
 
 coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_width, grid_cell_size) for y in range(0, screen_height, grid_cell_size)]
 
-spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (grid_cell_size, grid_cell_size))
+spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (60, 35))
 
 # holds the level layout in a list of strings
 # use 20walls/row, 10walls/column
@@ -129,7 +128,7 @@ for y, row in enumerate(level):
 
 font = pygame.font.Font(None, 36)
 attempt = 1
-attempt_text = font.render(f"Attempt : {attempt}", True, (255, 255, 255))
+attempt_text = font.render(f"Attempt : {attempt}/3", True, (255, 255, 255))
 attempt_text_rect = attempt_text.get_rect(center = (screen_width // 2, 25))
 screen.blit(attempt_text, attempt_text_rect)
 

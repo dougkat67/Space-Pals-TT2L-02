@@ -5,7 +5,7 @@ from collecting_coins import Coin
 
 # class the orange dude
 class Player(pygame.sprite.Sprite):
-    def __init__(self, images, grid_size, heart_images, animation_speed=0.2, initial_position=(0, 0)):
+    def __init__(self, images, grid_size, animation_speed=0.2, initial_position=(0, 0)):
         super().__init__()
         if isinstance(images, list):
             self.images = images
@@ -19,9 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=initial_position if isinstance(initial_position, tuple) else (0, 0))
         self.grid_size = grid_size
         self.num_collisions = 0  # Track the number of collisions with enemies
-        self.heart_images = heart_images
-        self.num_hearts = len(heart_images)
-        self.current_hearts = self.num_hearts
+        self.heart_images = [heart_image.copy() for _ in range(num_hearts)]  # Copy heart images
 
     def update(self):
         # update the player's image for animation
@@ -59,14 +57,23 @@ class Player(pygame.sprite.Sprite):
                     self.rect.top = wall.rect.bottom
 
     def collide_with_enemy(self):
-        self.current_hearts -= 1
-        if self.current_hearts <= 0:
-            running = False
+        if self.num_collisions < num_hearts:
+            # Convert corresponding heart image to black and white
+            bw_heart_image = self.heart_images[self.num_collisions].convert()
+            bw_heart_image = bw_heart_image.convert_alpha()
+            bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
+            self.heart_images[self.num_collisions] = bw_heart_image
+        self.num_collisions += 1
+    
+        if self.num_collisions >= num_hearts:
+            # End game loop if all hearts are black and white
+            running = False  # Assuming 'running' is accessible here
+
 
     def draw_hearts(self, screen):
-        for i in range(self.current_hearts):
-            # display remaining hearts
-            screen.blit(self.heart_images[i], (heart_position[0] + i * heart_spacing, heart_position[1]))
+        for i, heart_image in enumerate(self.heart_images):
+            screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, image, grid_size, walls, player, initial_positions):
@@ -80,13 +87,13 @@ class Enemy(pygame.sprite.Sprite):
         self.current_position_index = 0
         self.rect.topleft = self.positions[self.current_position_index]
         self.direction = 1  # 1 for right, -1 for left
-        self.speed = 0.8  # adjust this value to control the speed
+        self.speed = 0.8  # Adjust this value to control the speed
 
     def update(self):
-        # move enemy left or right
+        # Move enemy left or right
         self.rect.x += self.direction * self.speed
 
-        # check collision with walls
+        # Check collision with walls
         for wall in self.walls:
             if self.rect.colliderect(wall.rect):
                 # If collision with left side of the wall and moving right
@@ -103,7 +110,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.colliderect(self.player.rect):
             self.player.collide_with_enemy()
 
-        # update current position index if enemy reaches the end of the path
+        # Update current position index if enemy reaches the end of the path
         if self.rect.x < min(self.positions, key=lambda x: x[0])[0] or self.rect.x > max(self.positions, key=lambda x: x[0])[0]:
             self.current_position_index = (self.current_position_index + 1) % len(self.positions)
             self.rect.topleft = self.positions[self.current_position_index]
@@ -123,30 +130,30 @@ screen_width, screen_height = 1000,500
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 alien_images = [
-    pygame.transform.scale(pygame.image.load('images/alien2_0.png'), (45, 45)),
-    pygame.transform.scale(pygame.image.load('images/alien2_1.png'), (45, 45)),
-    pygame.transform.scale(pygame.image.load('images/alien2_2.png'), (45, 45)),
-    pygame.transform.scale(pygame.image.load('images/alien2_3.png'), (45, 45))
+    pygame.transform.scale(pygame.image.load('images/alien3_0.png'), (25, 25)),
+    pygame.transform.scale(pygame.image.load('images/alien3_1.png'), (25, 25)),
+    pygame.transform.scale(pygame.image.load('images/alien3_2.png'), (25, 25)),
+    pygame.transform.scale(pygame.image.load('images/alien3_3.png'), (25, 25))
     ]
 
 clock = pygame.time.Clock()
 walls = [] # list to hold the walls
 grid_cell_size = 25
 
-heart_images = pygame.image.load('images/heart.png')
+heart_image = pygame.image.load('images/heart.png')
 
 coin_images = [
-    pygame.image.load('images/coin_0.png'),
-    pygame.image.load('images/coin_1.png'),
-    pygame.image.load('images/coin_2.png'),
-    pygame.image.load('images/coin_3.png'),
-    pygame.image.load('images/coin_4.png'),
-    pygame.image.load('images/coin_5.png')
+    pygame.transform.scale(pygame.image.load('images/coin_0.png'), (20, 20)),
+    pygame.transform.scale(pygame.image.load('images/coin_1.png'), (20, 20)),
+    pygame.transform.scale(pygame.image.load('images/coin_2.png'), (20, 20)),
+    pygame.transform.scale(pygame.image.load('images/coin_3.png'), (20, 20)),
+    pygame.transform.scale(pygame.image.load('images/coin_4.png'), (20, 20)),
+    pygame.transform.scale(pygame.image.load('images/coin_5.png'), (20, 20))
     ]
 
 coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_width, grid_cell_size) for y in range(0, screen_height, grid_cell_size)]
 
-spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (85, 50))
+spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (50, 28))
 
 # holds the level layout in a list of strings
 # 40x20 (25pixels per grid cell)
@@ -154,22 +161,22 @@ level2 = [
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-    "W  W                     W             W",
-    "W  W                     W             W",
-    "W  W  WWWWWW   WWWWWWWW  W  WWWWWWWWW  W",
-    "W        W            W  W          W  W",
-    "W        W            W  W          W  W",
-    "WWWWWWW  W  WWWW   W  W  WW  WW  W  W  W",
-    "W     W  W  W      W  W       W  W  W  W",
-    "W     W  W  W      W  W       W  W  W  W",
-    "W  W  W  W  W  W   W          W  W     W",
-    "W  W  W  W  W  W   W          W  W     W",
-    "W  W  W  W  W  W  WWWWWWWWWWWWW  WWWWWWW",
-    "W  W        W  W  W                    W",
-    "W  W        W  W  W                    W",
-    "W  WWWWWWW  W  W  W  W   WWWWWWWWWWWWWWW",
-    "W           W  W     W             E   W",
-    "W           W  W     W                 W",
+    "W                                      W",
+    "W WWWWWWWWWW  WWWW  WWWWWW  WWWWWWWWWW W",
+    "W W                      W  W W      W W",
+    "W W WWWW  WWWWWWWWWWWW  WW WW W    W W W",
+    "W W W           W        W  W W WW W   W",
+    "W W W WWWWWWWWW W WWWW   W  W   W  WWW W",
+    "W W W W         W WE W W        W    W W",
+    "W     W W  WWW  W W  W WW WWWWWWWWWW W W",
+    "W   W W WW             W       W     W W",
+    "W W   W  W  WWW  WWWWWWWWWWWWW W WWWWW W",
+    "W W W WW                 W   W W   W   W",
+    "WWW W    WWWW  WWW  W  W    WW   W W W W",
+    "W W WW W WW      W WW WWWWW W  WWW W W W",
+    "W W    W    W  W W  W          W     W W",
+    "W WW  WWWWWWW  WWWWWWWW  WWWWWWWW  WWW W",
+    "W                                      W",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
 ]
 
@@ -203,29 +210,29 @@ heart_position = (10, 10)
 # create coins at specific positions (20 coins in every level)
 coins = [Coin(grid_cell_size,(1, 6), coin_images),
          Coin(grid_cell_size,(1, 17), coin_images),
-         Coin(grid_cell_size, (4, 14), coin_images),
-         Coin(grid_cell_size,(4, 9), coin_images),
+         Coin(grid_cell_size, (3, 14), coin_images),
+         Coin(grid_cell_size,(4, 10), coin_images),
          Coin(grid_cell_size,(7, 3), coin_images),
-         Coin(grid_cell_size, (9, 14), coin_images),
+         Coin(grid_cell_size, (9, 13), coin_images),
          Coin(grid_cell_size, (10, 7), coin_images),
          Coin(grid_cell_size, (13, 9), coin_images),
-         Coin(grid_cell_size, (13, 15), coin_images),
+         Coin(grid_cell_size, (11, 15), coin_images),
          Coin(grid_cell_size, (16, 3), coin_images),
-         Coin(grid_cell_size, (20, 14), coin_images),
-         Coin(grid_cell_size, (20, 11), coin_images),
-         Coin(grid_cell_size, (22, 17), coin_images),
-         Coin(grid_cell_size, (23, 6), coin_images),
+         Coin(grid_cell_size, (20, 10), coin_images),
+         Coin(grid_cell_size, (18, 16), coin_images),
+         Coin(grid_cell_size, (21, 16), coin_images),
+         Coin(grid_cell_size, (23, 18), coin_images),
          Coin(grid_cell_size, (29, 9), coin_images),
          Coin(grid_cell_size, (31, 14), coin_images),
          Coin(grid_cell_size, (34, 11), coin_images),
          Coin(grid_cell_size, (34, 17), coin_images),
-         Coin(grid_cell_size, (34, 6), coin_images),
-         Coin(grid_cell_size,(37, 3), coin_images),
+         Coin(grid_cell_size, (36, 5), coin_images),
+         Coin(grid_cell_size,(38, 3), coin_images),
          ]
-coin_positions = [(1, 6), (1, 17), (4, 14), (4, 9), (7, 3), 
-                  (9, 14), (10, 7), (13, 9), (13, 15), (16, 3), 
-                  (20, 14), (20, 11), (22, 17), (23, 6), (29, 9),
-                  (31, 14), (34, 11), (34, 17), (34, 6), (37, 3)
+coin_positions = [(1, 6), (1, 17), (3, 14), (4, 10), (7, 3), 
+                  (9, 13), (10, 7), (13, 9), (11, 15), (16, 3), 
+                  (20, 10), (18, 16), (21, 16), (23, 18), (29, 9),
+                  (31, 14), (36, 5), (34, 17), (34, 6), (38, 3)
                   ]
 def reset_coins(coin_positions):
     global coins
@@ -235,12 +242,13 @@ def reset_coins(coin_positions):
 # set up the alien sprite
 grid_cell_size = 25
 player_initial_position = (1 * grid_cell_size, 3 * grid_cell_size)
-player = Player(alien_images, grid_cell_size, heart_images, initial_position=player_initial_position)
+player = Player(alien_images, grid_cell_size, initial_position=player_initial_position)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
-enemy_image = pygame.transform.scale(pygame.image.load('images/enemy.png'),(67.75, 38.75))
-enemy_initial_position = [(38 * grid_cell_size, 14 * grid_cell_size), (5 * grid_cell_size, 3 * grid_cell_size)]
+enemy_image = pygame.transform.scale(pygame.image.load('images/enemy.png'),(42, 22))
+enemy_initial_position = [(3 * grid_cell_size, 19 * grid_cell_size), (35 * grid_cell_size, 18 * grid_cell_size),
+                          (3 * grid_cell_size, 5 * grid_cell_size), (24 * grid_cell_size, 5 * grid_cell_size)]
 enemy = Enemy(enemy_image, grid_cell_size, walls, player, enemy_initial_position)
 all_sprites.add(enemy)
 
@@ -253,7 +261,7 @@ font = pygame.font.Font(None, 36)
 coin_image = pygame.image.load('images/coin_0.png')
 
 # initialize variables for the timer
-time_limit = 20 # ? seconds
+time_limit = 30 # ? seconds
 current_time = 0
 timer_font = pygame.font.Font(None, 36)
 
@@ -272,15 +280,15 @@ coin_position = (765, 6)
 timer_text_rect = timer_text.get_rect(topright=(screen_width - 130, 10 + collected_text.get_height() + 5))
 
 running = True
-initial_time = 20
+initial_time = 30
 start_time = pygame.time.get_ticks() // 1000 # current time in seconds
 
 while running and attempt <= num_hearts:
     # Calculate delta time
-    dt = clock.tick(60) / 1000.0  # convert milliseconds to seconds
+    dt = clock.tick(60) / 1000.0  # Convert milliseconds to seconds
     current_time += dt
 
-    # handle events
+    # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -295,18 +303,18 @@ while running and attempt <= num_hearts:
             elif pressed_keys[pygame.K_s]:
                 player.move(0, 1)  # Move down
 
-    # check for collision with the exit
+    # Check for collision with the exit
     if end_rect is not None and player.rect.colliderect(end_rect):
         player_won = True
         running = False
 
-    # check for collision with coins and collect them
+    # Check for collision with coins and collect them
     for coin in coins:
         if player.rect.colliderect(coin.rect):
             collected_coins += coin.collect()
             coins.remove(coin)
 
-    # update all sprites
+    # Update all sprites
     all_sprites.update()
     enemy.update()
 
