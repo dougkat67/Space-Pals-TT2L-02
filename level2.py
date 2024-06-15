@@ -65,8 +65,9 @@ class Player(pygame.sprite.Sprite):
 
     def draw_hearts(self, screen):
         for i in range(self.current_hearts):
-            # display remaining hearts
-            screen.blit(self.heart_images[i], (heart_position[0] + i * heart_spacing, heart_position[1]))
+            if i < self.current_hearts:
+                # display remaining hearts
+                screen.blit(self.heart_images[i], (heart_position[0] + i * heart_spacing, heart_position[1]))
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, image, grid_size, walls, player, initial_positions):
@@ -133,7 +134,9 @@ clock = pygame.time.Clock()
 walls = [] # list to hold the walls
 grid_cell_size = 25
 
-heart_images = pygame.image.load('images/heart.png')
+heart_images = [
+    pygame.image.load('images/heart.png')
+    ]
 
 coin_images = [
     pygame.image.load('images/coin_0.png'),
