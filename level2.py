@@ -3,9 +3,8 @@ import random
 import pygame
 from collecting_coins import Coin
 
-# class the orange dude
 class Player(pygame.sprite.Sprite):
-    def __init__(self, images, grid_size, heart_images, animation_speed=0.2, initial_position=(0, 0)):
+    def __init__(self, images, grid_size, animation_speed=0.2, initial_position=(0, 0)):
         super().__init__()
         if isinstance(images, list):
             self.images = images
@@ -13,16 +12,14 @@ class Player(pygame.sprite.Sprite):
             self.images = [images] # ensure images is always treated as a list
         self.image_index = 0
         self.image = self.images[self.image_index]
-        self.animation_speed = animation_speed
-        self.animation_timer = 0
+        self.animation_speed = float(animation_speed)
+        self.animation_timer = 0.0
         # ensure initial_position is a tuple
         self.rect = self.image.get_rect(topleft=initial_position if isinstance(initial_position, tuple) else (0, 0))
         self.grid_size = grid_size
         self.num_collisions = 0  # Track the number of collisions with enemies
-        self.heart_images = heart_images
-        self.num_hearts = len(heart_images)
-        self.current_hearts = self.num_hearts
-
+        self.hearts_left = 3
+        
     def update(self):
         # update the player's image for animation
         self.animation_timer += dt
@@ -30,6 +27,13 @@ class Player(pygame.sprite.Sprite):
             self.animation_timer = 0
             self.image_index = (self.image_index + 1) % len(self.images)
             self.image = self.images[self.image_index]
+
+        if self.rect.colliderect(enemy.rect):
+            self.collide_with_enemy()
+            return True  # Return True to indicate collision
+        
+        return False  # Return False if no collision
+
 
     def move(self, dx, dy):
         # calculate the change in position based on grid size
@@ -59,16 +63,11 @@ class Player(pygame.sprite.Sprite):
                     self.rect.top = wall.rect.bottom
 
     def collide_with_enemy(self):
-        self.current_hearts -= 1
-        if self.current_hearts <= 0:
-            running = False
-
-    def draw_hearts(self, screen):
-        for i in range(self.current_hearts):
-            if i < self.current_hearts:
-                # display remaining hearts
-                screen.blit(self.heart_images[i], (heart_position[0] + i * heart_spacing, heart_position[1]))
-
+        if self.num_collisions == 0:
+           self.hearts_left -= 1
+           self.num_collisions += 1
+        
+     
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, image, grid_size, walls, player, initial_positions):
         super().__init__()
@@ -103,13 +102,16 @@ class Enemy(pygame.sprite.Sprite):
         # Check collision with player
         if self.rect.colliderect(self.player.rect):
             self.player.collide_with_enemy()
-
+            self.player.num_collisions = 0 
+            return True
+        
         # update current position index if enemy reaches the end of the path
         if self.rect.x < min(self.positions, key=lambda x: x[0])[0] or self.rect.x > max(self.positions, key=lambda x: x[0])[0]:
             self.current_position_index = (self.current_position_index + 1) % len(self.positions)
             self.rect.topleft = self.positions[self.current_position_index]
 
-# nice class to hold a wall rect
+        return False
+
 class Wall(object):
     def __init__(self, pos):
         walls.append(self)
@@ -120,7 +122,7 @@ pygame.init()
 
 # set up the display
 pygame.display.set_caption("Maze")
-screen_width, screen_height = 1000,500
+screen_width, screen_height = 1000, 500
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 alien_images = [
@@ -133,10 +135,6 @@ alien_images = [
 clock = pygame.time.Clock()
 walls = [] # list to hold the walls
 grid_cell_size = 25
-
-heart_images = [
-    pygame.image.load('images/heart.png')
-    ]
 
 coin_images = [
     pygame.image.load('images/coin_0.png'),
@@ -199,9 +197,10 @@ attempt_text = font.render(f"Attempt: {attempt}/3", True, (255, 255, 255))
 attempt_text_rect = attempt_text.get_rect(center = (screen_width // 2, 25))
 screen.blit(attempt_text, attempt_text_rect)
 
-num_hearts = 3
-heart_spacing = 40
-heart_position = (10, 10)
+heart= pygame.image.load('images/heart.png')
+heart_rect = heart.get_rect()
+hearts_left = 3
+mortality = True
 
 # create coins at specific positions (20 coins in every level)
 coins = [Coin(grid_cell_size,(1, 6), coin_images),
@@ -225,11 +224,13 @@ coins = [Coin(grid_cell_size,(1, 6), coin_images),
          Coin(grid_cell_size, (34, 6), coin_images),
          Coin(grid_cell_size,(37, 3), coin_images),
          ]
+
 coin_positions = [(1, 6), (1, 17), (4, 14), (4, 9), (7, 3), 
                   (9, 14), (10, 7), (13, 9), (13, 15), (16, 3), 
                   (20, 14), (20, 11), (22, 17), (23, 6), (29, 9),
                   (31, 14), (34, 11), (34, 17), (34, 6), (37, 3)
                   ]
+
 def reset_coins(coin_positions):
     global coins
     coins = [Coin(grid_cell_size, pos, coin_images) for pos in coin_positions]
@@ -238,7 +239,7 @@ def reset_coins(coin_positions):
 # set up the alien sprite
 grid_cell_size = 25
 player_initial_position = (1 * grid_cell_size, 3 * grid_cell_size)
-player = Player(alien_images, grid_cell_size, heart_images, initial_position=player_initial_position)
+player = Player(alien_images, grid_cell_size, initial_position=player_initial_position)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
@@ -274,11 +275,12 @@ collected_text = font.render("", True, (255, 255, 255))
 coin_position = (765, 6)
 timer_text_rect = timer_text.get_rect(topright=(screen_width - 130, 10 + collected_text.get_height() + 5))
 
+#game loop
 running = True
 initial_time = 20
 start_time = pygame.time.get_ticks() // 1000 # current time in seconds
 
-while running and attempt <= num_hearts:
+while running and attempt <= hearts_left:
     # Calculate delta time
     dt = clock.tick(60) / 1000.0  # convert milliseconds to seconds
     current_time += dt
@@ -312,6 +314,7 @@ while running and attempt <= num_hearts:
     # update all sprites
     all_sprites.update()
     enemy.update()
+    player.update()
 
     # fill the screen with background color
     screen.fill((173, 216, 230))
@@ -326,6 +329,20 @@ while running and attempt <= num_hearts:
         coin.update(dt)
         screen.blit(coin.image, coin.rect)
 
+    if hearts_left == 3:
+            screen.blit(heart,(20,10))
+            screen.blit(heart,(60,10))
+            screen.blit(heart,(100,10))
+    elif hearts_left == 2:
+            screen.blit(heart,(20,10))
+            screen.blit(heart,(60,10))
+    elif hearts_left == 1:
+            screen.blit(heart,(20,10))
+
+    if player.update():
+        player.collide_with_enemy()
+        hearts_left -= 1
+    
     # display enemy
     screen.blit(enemy.image, enemy.rect)
 
@@ -362,7 +379,7 @@ while running and attempt <= num_hearts:
     # check end game conditions
     if time_up and not player_won:
         attempt += 1
-        if attempt <= num_hearts:
+        if attempt <= hearts_left:
             # reset game state for next attempt
             player.rect.topleft = player_initial_position
             current_time = 0
@@ -375,10 +392,8 @@ while running and attempt <= num_hearts:
         else:
             running = False  # Player loses if hearts are exhausted
 
-    if player_won or attempt > num_hearts:
+    if player_won or attempt > hearts_left:
         running = False  # End game if player won or attempted 3 times
-
-    player.draw_hearts(screen)
     
     # update display
     pygame.display.flip()

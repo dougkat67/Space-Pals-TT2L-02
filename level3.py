@@ -306,8 +306,8 @@ while running and attempt <= hearts_left:
         if player.rect.colliderect(enemy.rect):
             player.collide_with_enemy()
             hearts_left -= 1
-        if hearts_left == 0:
-            running = False  # end game if no hearts left
+            if hearts_left == 0:
+                running = False  # end game if no hearts left
         enemy.update()  # update enemy position and behavior
         screen.blit(enemy.image, enemy.rect)  # draw enemy on the screen
 
