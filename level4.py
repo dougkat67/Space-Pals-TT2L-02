@@ -64,6 +64,8 @@ class Player(pygame.sprite.Sprite):
                 elif dy < 0: # moving up; hit bottom side of the wall
                     self.rect.top = wall.rect.bottom
 
+
+
     def collide_with_enemy(self):
         if self.num_collisions < num_hearts:
             # Convert corresponding heart image to black and white
@@ -172,6 +174,7 @@ coins = [Coin(grid_cell_size, (x, y), coin_images) for x in range(0, screen_widt
 spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (50, 28))
 
 # holds the level layout in a list of strings
+
 # 40x20 (25pixels per grid cell)
 level2 = [
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
@@ -194,6 +197,7 @@ level2 = [
     "W WW  WWWWWWW  WWWWWWWW  WWWWWWWW  WWW W",
     "W                                      W",
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+
 ]
 
 # Calculate the size of each grid cell based on the screen dimensions and number of cells
@@ -300,6 +304,7 @@ def display_hearts():
     for i in range(num_hearts):
         screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
 
+
 # alien's initial position
 initial_grid_x = 3
 initial_grid_y = 4
@@ -328,9 +333,7 @@ font = pygame.font.Font(None, 36)
 coin_image = pygame.image.load('images/coin_0.png')
 
 # initialize variables for the timer
-
 time_limit = 30 # ? seconds
-
 current_time = 0
 timer_font = pygame.font.Font(None, 36)
 

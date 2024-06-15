@@ -11,12 +11,13 @@ UI_FONT_SIZE = 18
 #general colors
 WATER_COLOR = '#71ddee'
 UI_BG_COLOR = '#222222'
+UI_COIN_BG_COLOR = '#FFFF00'
 UI_BORDER_COLOR = '#111111'
 TEXT_COLOR = '#000000'
 
 #ui colors 
-SATIETY_COLOR = 'red'
-HAPPY_COLOR = 'blue'
+SATIETY_COLOR = 'yellow'
+HAPPY_COLOR = 'red'
 CLEAR_COLOR = 'green'
 UI_BORDER_COLOR_ACTIVE = 'gold'
 

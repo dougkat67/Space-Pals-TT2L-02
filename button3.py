@@ -5,6 +5,7 @@ class Button3(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = pygame.image.load('images/playing.png').convert_alpha()
         self.rect = self.image.get_rect(center=(500,450))
+       
 
     def update(self, deltatime, player_action):
         pass
