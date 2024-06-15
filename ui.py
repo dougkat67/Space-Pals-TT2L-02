@@ -64,5 +64,4 @@ class UI:
     def reset_stats(self):
         self.happy = 0
         self.cleanliness = 0
-        self.test_contribution = 0
-
+        

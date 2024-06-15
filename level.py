@@ -44,6 +44,10 @@ class Pet(State):
         # OTHER variable
 
         self.elapsed_time = 0
+        self.click = False
+        self.eat = False
+        self.bath = False
+        self.entertain = False
 
         # Day
 
@@ -60,6 +64,51 @@ class Pet(State):
 
     def handle_events(self, events):
         pass
+
+    def update(self, deltatime, actions):
+        self.monster.update()
+        current_time = pygame.time.get_ticks()
+        self.elapsed_time = (current_time - self.start_time) // 1000
+        if self.button1.rect.collidepoint(self.game.mouse):
+            if pygame.mouse.get_pressed()[0] and not self.click:
+                self.eat = True
+                if self.eat:
+                    self.monster.monster_select = 2 if self.monster.monster_select < 5 else 6 if  self.monster.monster_select < 9 else 10
+                    self.last_button_click_time = current_time
+                    self.ui.feeding = min(self.ui.feeding + 10, self.ui.stats['feeding'])
+                    self.eat = False
+                self.click = True
+            if pygame.mouse.get_pressed()[0]:
+                self.eat = False
+                self.click = False
+
+        if self.button2.rect.collidepoint(self.game.mouse):
+            if pygame.mouse.get_pressed()[0] and not self.click:
+                self.bath = True
+                if self.bath:
+                    self.monster.monster_select = 3 if self.monster.monster_select < 5 else 7 if  self.monster.monster_select < 9 else 11
+                    self.last_button_click_time = current_time
+                    self.ui.cleanliness = min(self.ui.cleanliness + 10, self.ui.stats['cleanliness'])
+                    self.bath = False
+                self.click = True
+                
+            if pygame.mouse.get_pressed()[0]:
+                self.bath = False
+                self.click = False
+
+        if self.button3.rect.collidepoint(self.game.mouse):
+            if pygame.mouse.get_pressed()[0] and not self.click:
+                self.entertain = True
+                if self.entertain:
+                    self.monster.monster_select = 4 if self.monster.monster_select < 5 else 8 if  self.monster.monster_select < 9 else 12
+                    self.last_button_click_time = current_time
+                    self.ui.happy = min(self.ui.happy + 10, self.ui.stats['happiness'])
+                    self.entertain = False
+                self.click = True
+                
+            if pygame.mouse.get_pressed()[0]:
+                self.entertain = False
+                self.click = False          
 
 
     def update(self,deltatime,actions):
@@ -80,6 +129,7 @@ class Pet(State):
                             self.ui.feeding = min(self.ui.feeding + 20, self.ui.stats['feeding']) # Feeding 
                             self.ui.cleanliness = min(self.ui.cleanliness - 10, self.ui.stats['cleanliness']) # Bathing
                             self.ui.happy = min(self.ui.happy + 5, self.ui.stats['happiness']) # Happiness
+
 
                             main_sound = pygame.mixer.Sound('audio/button.mp3')
                             main_sound.set_volume(0.5)

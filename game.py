@@ -7,7 +7,7 @@ from states.menu import Menu
 class Game():
     def __init__(self):
         pygame.init()
-        pygame.display.set_caption('Pet Game')
+        pygame.display.set_caption('Space Pals')
         self.running, self.playing = True, True
         self.DISPLAY_W, self.DISPLAY_H = 1000, 500
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
@@ -38,6 +38,8 @@ class Game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
                     self.actions["start"] = True
+
+            self.mouse = pygame.mouse.get_pos()
                     
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -58,25 +60,25 @@ class Game():
                 if event.key == pygame.K_RETURN:
                     self.actions["play"] = True
 
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_a:
-                        self.actions["left"] = False
-                    if event.key == pygame.K_d:
-                        self.actions["right"] = False
-                    if event.key == pygame.K_w:
-                        self.actions["up"] = False
-                    if event.key == pygame.K_s:
-                        self.actions["down"] = False
-                    if event.key == pygame.K_o:
-                        self.actions["action1"] = False
-                    if event.key == pygame.K_p:
-                        self.actions["action2"] = False
-                    if event.key == pygame.K_RETURN:
-                        self.actions["play"] = False
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_a:
+                    self.actions["left"] = False
+                if event.key == pygame.K_d:
+                    self.actions["right"] = False
+                if event.key == pygame.K_w:
+                    self.actions["up"] = False
+                if event.key == pygame.K_s:
+                    self.actions["down"] = False
+                if event.key == pygame.K_o:
+                    self.actions["action1"] = False
+                if event.key == pygame.K_p:
+                    self.actions["action2"] = False
+                if event.key == pygame.K_RETURN:
+                    self.actions["play"] = False
 
-                if event.type == pygame.MOUSEBUTTONUP:
-                   if pygame.mouse.get_pressed()[0]:
-                    self.actions["start"] = False
+            if event.type == pygame.MOUSEBUTTONUP:
+                if pygame.mouse.get_pressed()[0]:
+                 self.actions["start"] = False
 
         if self.state_stack:
                 self.state_stack[-1].handle_events(events)
@@ -95,17 +97,13 @@ class Game():
         self.prev_time = now
 
     def draw_text(self, surface, text, color, x, y, font):
-        #font = self.font_name
         text_surface = font.render(text, True, color)
-        #text_surface.set_colorkey((0,0,0))
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         surface.blit(text_surface, text_rect)
 
     def load_states(self):
         self.menu_screen = Menu(self)
-        #self.naming_screen = Naming(self, self.font_name)
-        #self.state_stack.append(self.naming_screen)
         self.state_stack.append(self.menu_screen)
 
     def reset_keys(self):
