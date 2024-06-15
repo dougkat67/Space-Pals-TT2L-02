@@ -1,16 +1,16 @@
 import pygame
-import json  # Import json module
+import json 
 from states.state import State
 from level import Pet
 
-class Naming(State):  # inherit from State
+class Naming(State):
     def __init__(self, game):
-        super().__init__(game)  # use back the abstract state class
+        super().__init__(game)  
         self.game = game
         self.naming_image = pygame.image.load("WIP_art/naming_page.png").convert()
         self.naming_font = pygame.font.SysFont("Pixeltype Regular", 50, False, False)
         self.user_text = ""
-        self.input_rect = pygame.Rect(500, 450, 200, 32)  # x, y, rect width, rect height
+        self.input_rect = pygame.Rect(500, 450, 200, 32)  
         self.color_active = (0, 0, 0)
         self.color_passive = (255, 0, 0)
         self.color = self.color_passive
@@ -30,7 +30,7 @@ class Naming(State):  # inherit from State
                 else:
                     self.user_text += event.unicode
                 
-                # Save user_text only if it ends with a carriage return
+                
                 if self.user_text.endswith('\r'):
                     self.save_user_text()
 
@@ -40,7 +40,7 @@ class Naming(State):  # inherit from State
 
         if self.actions["play"]:
             new_state = Pet(self.game)
-            new_state.enter_state()  # adds the new state to the top of the stack
+            new_state.enter_state()  
         self.game.reset_keys()
 
     def render(self, display, font):
@@ -59,7 +59,7 @@ class Naming(State):  # inherit from State
             self.game.actions[action] = False
 
     def save_user_text(self):
-        # Read existing data
+        
         try:
             with open('user_text.json', 'r') as file:
                 data = json.load(file)
@@ -68,12 +68,12 @@ class Naming(State):  # inherit from State
         except FileNotFoundError:
             data = {"user_texts": []}
 
-        # Append new user_text without the carriage return
+       
         data["user_texts"].append(self.user_text.strip())
 
-        # Save updated data
+        
         with open('user_text.json', 'w') as file:
             json.dump(data, file, indent=4)
 
-        # Reset user_text after saving
+        
         self.user_text = ""

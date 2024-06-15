@@ -48,3 +48,13 @@ class UI:
         self.show_bar(display, self.cleanliness, self.stats['cleanliness'], self.clear_bar_rect, CLEAR_COLOR)
 
         self.show_coin(display, self.coin)
+
+    def update ( self, deltatime , player_action):
+        pass
+    def render (self, display) :
+        pass
+
+    def reset_stats(self):
+        self.feeding = 0
+        self.cleanliness = 0
+        self.happy = 0
