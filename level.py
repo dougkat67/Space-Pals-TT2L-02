@@ -40,6 +40,10 @@ class Pet(State):
         self.screen_width = SCREEN_WIDTH
 
         self.elapsed_time = 0
+        self.click = False
+        self.eat = False
+        self.bath = False
+        self.entertain = False
 
         # Day
         self.day = 1
@@ -55,26 +59,46 @@ class Pet(State):
         self.monster.update()
         current_time = pygame.time.get_ticks()
         self.elapsed_time = (current_time - self.start_time) // 1000
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.button1.rect.collidepoint(event.pos):
+        if self.button1.rect.collidepoint(self.game.mouse):
+            if pygame.mouse.get_pressed()[0] and not self.click:
+                self.eat = True
+                if self.eat:
                     self.monster.monster_select = 2 if self.monster.monster_select < 5 else 6 if  self.monster.monster_select < 9 else 10
                     self.last_button_click_time = current_time
                     self.ui.feeding = min(self.ui.feeding + 10, self.ui.stats['feeding'])
+                    self.eat = False
+                self.click = True
+            if pygame.mouse.get_pressed()[0]:
+                self.eat = False
+                self.click = False
 
-                elif self.button2.rect.collidepoint(event.pos):
+        if self.button2.rect.collidepoint(self.game.mouse):
+            if pygame.mouse.get_pressed()[0] and not self.click:
+                self.bath = True
+                if self.bath:
                     self.monster.monster_select = 3 if self.monster.monster_select < 5 else 7 if  self.monster.monster_select < 9 else 11
                     self.last_button_click_time = current_time
                     self.ui.cleanliness = min(self.ui.cleanliness + 10, self.ui.stats['cleanliness'])
+                    self.bath = False
+                self.click = True
+                
+            if pygame.mouse.get_pressed()[0]:
+                self.bath = False
+                self.click = False
 
-                elif self.button3.rect.collidepoint(event.pos):
+        if self.button3.rect.collidepoint(self.game.mouse):
+            if pygame.mouse.get_pressed()[0] and not self.click:
+                self.entertain = True
+                if self.entertain:
                     self.monster.monster_select = 4 if self.monster.monster_select < 5 else 8 if  self.monster.monster_select < 9 else 12
                     self.last_button_click_time = current_time
                     self.ui.happy = min(self.ui.happy + 10, self.ui.stats['happiness'])
+                    self.entertain = False
+                self.click = True
+                
+            if pygame.mouse.get_pressed()[0]:
+                self.entertain = False
+                self.click = False          
 
         if all([self.ui.feeding >= self.ui.stats['feeding'], # Day 2
                 self.ui.cleanliness >= self.ui.stats['cleanliness'],

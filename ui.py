@@ -45,4 +45,4 @@ class UI:
         self.feeding = 0
         self.happy = 0
         self.cleanliness = 0
-        self.test_contribution = 0
+    

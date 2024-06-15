@@ -55,7 +55,13 @@ class Player(pygame.sprite.Sprite):
                 if dy < 0: # moving up; hit bottom side of the wall
                     self.rect.top = wall.rect.bottom
 
-# nice class to hold a wall rect
+class Enemy(pygame.sprite.Sprite):
+     def __init__(self):
+        super().__init__()
+        
+        
+
+#class to hold a wall rect
 class Wall(object):
     def __init__(self, pos):
         walls.append(self)
@@ -99,25 +105,15 @@ spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png
 # holds the level layout in a list of strings
 # use 20walls/row, 10walls/column
 level = [
-    "WWWWWWWWWWWWWWWWWWWW",
-    "W                  W",
-    "W WWWW WWWW WWWW   W",
-    "W W  W W  W W  W W W",
-    "W W  W W  W W  W W W",
-    "W    W    W    W   W",
-    "W WWWW WWWW WWWW W W",
-    "W                  W",
-    "W WWWW WWWW WWWW W W",
-    "W W  W W  W W  W W W",
-    "W W  W W  W W  W W W",
-    "W    W    W    W   W",
-    "W WWWW WWWW WWWW W W",
-    "W                  W",
-    "W WWWW WWWW WWWW W W",
-    "W W  W W  W W  W W W",
-    "W W  W W  W W  W W W",
-    "W    W    W    W   W",
-    "W WWWW WWWW WWWW E W",
+     "WWWWWWWWWWWWWWWWWWWW",        
+    "W   WWWWWWWWWWWW   W",
+    "WWW    WWWWWW    WWW",
+    "WWWWWW         WWWWW",
+    "WWWWWW         WWWWW",
+    "WWWWW   WW WW   WWWW",
+    "WWWWW           WWWW",
+    "WWW     WW WW     WW",
+    "W   WWW       WW  EW",
     "WWWWWWWWWWWWWWWWWWWW",
 ]
 
@@ -162,25 +158,25 @@ def display_hearts():
         screen.blit(heart_image, (heart_position[0] + i * heart_spacing, heart_position[1]))
 
 # create coins at specific positions (20 coins in every level)
-coins = [Coin(grid_cell_size,(2, 2), coin_images),
-         Coin(grid_cell_size,(7, 2), coin_images),
-         Coin(grid_cell_size, (9, 2), coin_images),
-         Coin(grid_cell_size,(11, 2), coin_images),
-         Coin(grid_cell_size,(4, 3), coin_images),
-         Coin(grid_cell_size, (1, 4), coin_images),
-         Coin(grid_cell_size, (5, 4), coin_images),
+coins = [Coin(grid_cell_size,(3, 1), coin_images),
+         Coin(grid_cell_size,(7, 3), coin_images),
+         Coin(grid_cell_size, (9, 3), coin_images),
+         Coin(grid_cell_size,(11, 3), coin_images),
+         Coin(grid_cell_size,(15, 2), coin_images),
+         Coin(grid_cell_size, (18, 1), coin_images),
+         Coin(grid_cell_size, (5, 6), coin_images),
          Coin(grid_cell_size, (10, 4), coin_images),
-         Coin(grid_cell_size, (18, 4), coin_images),
-         Coin(grid_cell_size, (16, 4), coin_images),
+         Coin(grid_cell_size, (14, 4), coin_images),
+         Coin(grid_cell_size, (13, 4), coin_images),
          Coin(grid_cell_size, (7, 5), coin_images),
-         Coin(grid_cell_size, (3, 6), coin_images),
-         Coin(grid_cell_size, (9, 6), coin_images),
+         Coin(grid_cell_size, (7, 6), coin_images),
          Coin(grid_cell_size, (13, 6), coin_images),
+         Coin(grid_cell_size, (14, 6), coin_images),
          Coin(grid_cell_size, (15, 7), coin_images),
-         Coin(grid_cell_size, (18, 7), coin_images),
+         Coin(grid_cell_size, (16, 7), coin_images),
          Coin(grid_cell_size, (1, 8), coin_images),
          Coin(grid_cell_size, (3, 8), coin_images),
-         Coin(grid_cell_size, (5, 8), coin_images),
+         Coin(grid_cell_size, (5, 7), coin_images),
          Coin(grid_cell_size,(10, 8), coin_images),
          ]
 
@@ -206,7 +202,7 @@ font = pygame.font.Font(None, 36)
 coin_image = pygame.image.load('images/coin_0.png')
 
 # initialize variables for the timer
-time_limit = 10 # 10 seconds
+time_limit = 30 # 10 seconds
 current_time = 0
 timer_font = pygame.font.Font(None, 36)
 
