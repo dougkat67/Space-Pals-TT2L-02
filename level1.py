@@ -345,3 +345,4 @@ while running and attempt <= num_hearts:
 
 # Quit Pygame
 pygame.quit()
+

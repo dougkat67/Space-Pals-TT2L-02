@@ -11,6 +11,9 @@ class Play:
         self.clock = pygame.time.Clock()
         self.game = Game()
 
+        
+        
+
     def run(self):
         self.game.run()
 
