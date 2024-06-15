@@ -22,12 +22,8 @@ class Pet(State):
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.visible_sprites = pygame.sprite.Group()
         self.font = pygame.font.Font(None, 36)
-
-
-        #Background
         self.background = pygame.image.load('background.png').convert()
         self.background = pygame.transform.scale(self.background, (SCREEN_WIDTH, SCREEN_HEIGHT))
-
 
         # file load
         self.monster = Alien((400, 350))
@@ -236,15 +232,7 @@ class Pet(State):
 
             pygame.display.flip()
             self.clock.tick(60)
-
-
-
-        
-            
-
-            
-
-    
+  
     def render(self, display, font):
         # Render the current game state
         display.blit(self.background, (0, 0))
