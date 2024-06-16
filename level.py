@@ -14,6 +14,7 @@ from states.state import State
 from button5 import Button5
 from data import Data
 
+
 class Pet(State):
     def __init__(self, game):
         super().__init__(game)
@@ -53,6 +54,7 @@ class Pet(State):
         self.button2 = Button2((110, 350), self.visible_sprites)
         self.button3 = Button3((110, 350), self.visible_sprites)
         self.button5 = Button5((55, 175), self.visible_sprites)
+        
         self.data = Data((0, 0), self.visible_sprites)  
 
         self.ui = UI()
@@ -99,7 +101,7 @@ class Pet(State):
 
         current_time = pygame.time.get_ticks()
         self.elapsed_time = (current_time - self.start_time) / 1000
-        if self.elapsed_time > 5 and not self.time_recorded:  # Trigger happy ending
+        if self.elapsed_time > 50 and not self.time_recorded:  # Trigger happy ending
             self.current_scene = "happy_ending"
             self.record_time()
 
@@ -131,6 +133,7 @@ class Pet(State):
             second_sound.play(loops=0)
 
             self.ui.coin -= 1
+            self.ui.save_collected_coins()
 
     def handle_button2_click(self):
         if self.ui.feeding >= 10 and self.ui.coin >= 1:
@@ -149,6 +152,7 @@ class Pet(State):
             second_sound.play(loops=0)
 
             self.ui.coin -= 1
+            self.ui.save_collected_coins()
 
     def handle_button3_click(self):
         if self.ui.feeding >= 20 and self.ui.coin >= 1:
@@ -162,6 +166,7 @@ class Pet(State):
             main_sound.play(loops=0)
 
             self.ui.coin -= 1
+            self.ui.save_collected_coins()
     def load_user_text(self):
         try:
             with open('user_text.json', 'r') as file:
@@ -177,8 +182,8 @@ class Pet(State):
 
     def update(self,deltatime,actions):
             self.monster.update()
-            current_time = pygame.time.get_ticks()
-            self.elapsed_time = (current_time - self.start_time) // 1000
+            current_time = pygame.time.get_ticks() # get current time
+            self.elapsed_time = (current_time - self.start_time) // 1000 # get elapsed time in seconds
 
 
             for event in pygame.event.get():
@@ -191,11 +196,11 @@ class Pet(State):
             # Alien grow
 
             if all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 1  : # Day2
-                self.ui.reset_stats()
+                self.ui.reset_stats() # Reset stats
                 self.monster.monster_select = 5 
                 self.day += 1
                 print(self.day)
-                main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
+                main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')   #sound
                 main_sound.set_volume(1)
                 main_sound.play(loops = 0)
                 
@@ -235,7 +240,7 @@ class Pet(State):
             self.ui.display(display)
             self.render_game_timer(display)
             self.render_game_level(display)
-        elif self.current_scene == "leaderboard":
+        elif self.current_scene == "leaderboard": # switch to leaderboard
             self.render_leaderboard(display)
         elif self.current_scene == "happy_ending":
             if self.current_image_index < len(self.happy_ending_images):

@@ -1,4 +1,5 @@
 import pygame
+import json  
 from setting import *
 from alien import *
 
@@ -18,7 +19,20 @@ class UI:
         self.cleanliness = self.stats['cleanliness'] * 0.1
         self.feeding = self.stats['feeding'] * 0.0
 
-        self.coin = 5
+        # Load collected coins from JSON file
+        self.coin = self.load_collected_coins()
+
+    def load_collected_coins(self):
+        try:
+            with open('collected_coins.json', 'r') as file:
+                data = json.load(file)
+                return data.get('collected_coins', 0)
+        except FileNotFoundError:
+            return 0
+
+    def save_collected_coins(self):
+        with open('collected_coins.json', 'w') as file:
+            json.dump({'collected_coins': self.coin}, file)
 
     def show_bar(self, display, current, max_amount, bg_rect, color):
         pygame.draw.rect(display, UI_BG_COLOR, bg_rect)
@@ -49,12 +63,12 @@ class UI:
 
         self.show_coin(display, self.coin)
 
-    def update ( self, deltatime , player_action):
+    def update(self, deltatime, player_action):
         pass
-    def render (self, display) :
+
+    def render(self, display):
         pass
 
     def reset_stats(self):
-        self.feeding = 0
-        self.cleanliness = 0
+        
         self.happy = 0
