@@ -3,11 +3,6 @@ import random
 import pygame
 from collecting_coins import Coin
 
-import os
-import random
-import pygame
-from collecting_coins import Coin
-
 # class the orange dude
 class Player(pygame.sprite.Sprite):
     def __init__(self, images, grid_size, animation_speed=0.2, initial_position=(0, 0)):
@@ -337,12 +332,8 @@ while running and attempt <= num_hearts:
     # Display hearts for attempts
     display_hearts(attempt)
 
-    # Update display
     pygame.display.flip()
 
-    # Cap the frame rate
     clock.tick(60)
 
-# Quit Pygame
 pygame.quit()
-

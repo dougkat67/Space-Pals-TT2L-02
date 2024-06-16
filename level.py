@@ -227,11 +227,6 @@ class Pet(State):
             if self.monster.monster_select in [18, 19, 20] and current_time - self.last_button_click_time >= 3000:
                 self.monster.monster_select = 17
 
-            if self.current_scene == "game":
-                self.render_game_timer()
-
-            pygame.display.flip()
-            self.clock.tick(60)
   
     def render(self, display, font):
         # Render the current game state
@@ -247,7 +242,7 @@ class Pet(State):
 
     def render_game_timer(self, display):
         time_surface = self.font.render(f"Time: {self.elapsed_time} seconds", True, (0, 0, 0))
-        time_rect = time_surface.get_rect(topright=(self.screen_width - 20, 20))
+        time_rect = time_surface.get_rect(topright=(SCREEN_WIDTH - 20, 20))
         display.blit(time_surface, time_rect)
 
 

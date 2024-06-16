@@ -80,7 +80,7 @@ class Enemy(pygame.sprite.Sprite):
         self.current_position_index = 0
         self.rect.topleft = self.positions[self.current_position_index]
         self.direction = 1  # 1 for right, -1 for left
-        self.speed = 0.8  # adjust this value to control the speed
+        self.speed = 2.0 # adjust this value to control the speed
 
     def update(self):
         # move enemy left or right
@@ -351,7 +351,7 @@ while running and attempt <= hearts_left:
 
     # display collected coins count
     screen.blit(coin_image, coin_position)
-    collected_text = font.render(f"Collected: {collected_coins:02d}/{total_coins}", True, (255, 255, 255))
+    collected_text = font.render(f"Collected: {collected_coins}/{total_coins}", True, (255, 255, 255))
     screen.blit(collected_text, (screen_width - collected_text.get_width() - 10, 10))
 
     # display remaining time
@@ -395,11 +395,9 @@ while running and attempt <= hearts_left:
     if player_won or attempt > hearts_left:
         running = False  # End game if player won or attempted 3 times
     
-    # update display
+    
     pygame.display.flip()
 
-    # cap the frame rate
     clock.tick(60)
 
-# Quit Pygame
 pygame.quit()
