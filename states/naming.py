@@ -36,7 +36,7 @@ class Naming(State):    #inherit from State
         self.color = self.color_active if self.active else self.color_passive
         self.actions = self.game.actions
         
-        if self.actions["play"]:
+        if self.actions["play"] and self.user_text:
             new_state = Pet(self.game)
             new_state.enter_state()   #adds the new state to the top of the stack             
         self.game.reset_keys()
@@ -48,7 +48,6 @@ class Naming(State):    #inherit from State
         self.game.draw_text(display, "It's hatching!", (0,0,0), 500, 100, font)
         self.game.draw_text(display, "Name the egg: ", (0,0,0), 300, 470, font)                                                                                                                                                               
         self.user_input_rect = pygame.draw.rect(display, self.color, self.input_rect, 3) #border width
-        self.user_input_rect = pygame.draw.rect(display, self.color, self.input_rect, 3)
         self.text_surface = self.naming_font.render(self.user_text, True, (0,0,0))
         display.blit(self.text_surface, (self.input_rect.x +5, self.input_rect.y +5))
         self.input_rect.w = max(200,self.text_surface.get_width() + 10)
