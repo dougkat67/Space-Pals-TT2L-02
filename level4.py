@@ -55,8 +55,8 @@ class Level4(State):
             "W WW  WWWWWWW  WWWWWWWW  WWWWWWWW  WWW W",
             "W                                      W",
             "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
-
         ]
+
 
         self.num_cols = len(self.level4[0])
         self.num_rows = len(self.level4)
@@ -155,6 +155,7 @@ class Level4(State):
                     self.player.move(0, -1)  # Move up
                 elif event.key == pygame.K_s:
                     self.player.move(0, 1)  # Move down
+
 
     def update(self, deltatime, actions):
         self.current_time += self.game.clock.tick(60) / 1000.0  # Convert milliseconds to seconds

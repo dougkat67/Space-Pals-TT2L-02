@@ -301,3 +301,4 @@ class Wall:
 
     def render(self, display, font):
         pass
+

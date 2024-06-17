@@ -235,6 +235,7 @@ class Level1(State):
         # Display hearts for attempts
         self.display_hearts(display,self.attempt)
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, images, grid_size, walls, animation_speed=0.2, initial_position=(0, 0)):
         super().__init__()
@@ -293,5 +294,7 @@ class Wall:
     def update(self, deltatime, actions):
         pass
 
+
     def render(self, display, font):
         pass
+

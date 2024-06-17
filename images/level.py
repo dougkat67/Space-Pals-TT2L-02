@@ -7,18 +7,14 @@ from alien import Alien
 from button import Button1
 from button2 import Button2
 from button3 import Button3
-from button4 import Button4
 from setting import SCREEN_WIDTH, SCREEN_HEIGHT
 from ui import UI
 from setting import *
 from states.state import State
-from level1 import Level1
-from level2 import Level2
-from level3 import Level3
-from level4 import Level4
-from level5 import Level5
 from button5 import Button5
-from data import Data
+# from leaderboard import ButtonGame
+
+
 
 class Pet(State):
     def __init__(self, game):
@@ -27,10 +23,13 @@ class Pet(State):
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.visible_sprites = pygame.sprite.Group()
         self.font = pygame.font.Font(None, 36)
-        self.background = pygame.image.load('images/background.png').convert()
+
+
+        #Background
+        self.background = pygame.image.load('background.png').convert()
         self.background = pygame.transform.scale(self.background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-        # Leaderboard background
+        #Leaderboard background
         self.leaderboard_background = pygame.image.load('leaderboard.jpg').convert()
         self.leaderboard_background = pygame.transform.scale(self.leaderboard_background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -49,63 +48,47 @@ class Pet(State):
         self.current_image_index = 0
         self.ending_type = None
 
+
         self.load_user_text()
 
-        # File load
 
+        # file load
         self.monster = Alien((400, 350))
         self.button1 = Button1((110, 350), self.visible_sprites)
         self.button2 = Button2((110, 350), self.visible_sprites)
         self.button3 = Button3((110, 350), self.visible_sprites)
-
-        self.button4 = Button4((110, 350), self.visible_sprites)
-
         self.button5 = Button5((55, 175), self.visible_sprites)
-        
-        self.data = Data((0, 0), self.visible_sprites)  
-
 
         self.ui = UI()
 
-        # Sound 
+        #Sound 
         main_sound = pygame.mixer.Sound('audio/song.mp3')
         main_sound.set_volume(0.5)
-
         main_sound.play(loops = -1)
 
         # OTHER variable
-        
 
         self.elapsed_time = 0
-
-        self.click = False
-        self.eat = False
-        self.bath = False
-        self.entertain = False
 
         # Day
 
         self.day = 1
-        self.last_button_click_time = pygame.time.get_ticks() 
-        self.current_scene = "game"
-        self.start_time = pygame.time.get_ticks()
         
-    def handle_events(self, events):
-        for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.button4.rect.collidepoint(event.pos):
-                    new_state = Level1(self.game)
-                    new_state.enter_state()  # Adds the new state to the top of the stack
 
-        self.button4.update()
-        self.game.reset_keys()
+        self.last_button_click_time = pygame.time.get_ticks() 
+
+        self.current_scene = "game"
+        
+        self.start_time = pygame.time.get_ticks()
+
+
 
         if os.path.exists("leaderboard.json"):
             with open("leaderboard.json", "r") as file:
                 self.leaderboard = json.load(file)
         
-        with open('combined_data.json', 'r') as file:
-            self.combined_data = json.load(file)
+
+        
 
     def handle_events(self, events):
         for event in events:
@@ -127,12 +110,11 @@ class Pet(State):
                     self.handle_button3_click()
                 elif self.button5.rect.collidepoint(event.pos):  
                     self.current_scene = "bad_ending"
-            
+                
 
         current_time = pygame.time.get_ticks()
-
         self.elapsed_time = (current_time - self.start_time) / 1000
-        if self.elapsed_time > 50 and not self.time_recorded:  # Trigger happy ending
+        if self.elapsed_time > 5 and not self.time_recorded:  # Trigger happy ending
             self.current_scene = "happy_ending"
             self.record_time()
 
@@ -164,7 +146,6 @@ class Pet(State):
             second_sound.play(loops=0)
 
             self.ui.coin -= 1
-            self.ui.save_collected_coins()
 
     def handle_button2_click(self):
         if self.ui.feeding >= 10 and self.ui.coin >= 1:
@@ -183,7 +164,6 @@ class Pet(State):
             second_sound.play(loops=0)
 
             self.ui.coin -= 1
-            self.ui.save_collected_coins()
 
     def handle_button3_click(self):
         if self.ui.feeding >= 20 and self.ui.coin >= 1:
@@ -197,7 +177,7 @@ class Pet(State):
             main_sound.play(loops=0)
 
             self.ui.coin -= 1
-            self.ui.save_collected_coins()
+
     def load_user_text(self):
         try:
             with open('user_text.json', 'r') as file:
@@ -212,30 +192,28 @@ class Pet(State):
             json.dump({"user_text": self.user_text}, file)
 
 
+
     def update(self,deltatime,actions):
             self.monster.update()
-            current_time = pygame.time.get_ticks() # get current time
-            self.elapsed_time = (current_time - self.start_time) // 1000 # get elapsed time in seconds
+            current_time = pygame.time.get_ticks()
+            self.elapsed_time = (current_time - self.start_time) // 1000
 
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
-
+                
                     
-            if not pygame.mouse.get_pressed()[0]:
-                self.click = False    
 
             # Alien grow
-    
+
             if all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 1  : # Day2
-                self.ui.reset_stats() # Reset stats
+                self.ui.reset_stats()
                 self.monster.monster_select = 5 
                 self.day += 1
                 print(self.day)
-                main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')   #sound
+                main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
                 main_sound.set_volume(1)
                 main_sound.play(loops = 0)
                 
@@ -266,8 +244,8 @@ class Pet(State):
                 main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
                 main_sound.set_volume(1)
                 main_sound.play(loops = 0)
-
-
+            
+    
     def render(self, display, font):
         if self.current_scene == "game":
             display.blit(self.background, (0, 0))
@@ -276,9 +254,8 @@ class Pet(State):
             self.ui.display(display)
             self.render_game_timer(display)
             self.render_game_level(display)
-        elif self.current_scene == "leaderboard": # switch to leaderboard
+        elif self.current_scene == "leaderboard":
             self.render_leaderboard(display)
-
         elif self.current_scene == "happy_ending":
             if self.current_image_index < len(self.happy_ending_images):
                 display.blit(self.happy_ending_images[self.current_image_index], (0, 0))
@@ -289,25 +266,24 @@ class Pet(State):
                 display.blit(self.bad_ending_images[self.current_image_index], (0, 0))
             else:
                 self.enter_leaderboard()
- 
-    def render_game_timer(self, display): # display seconds
+
+    def render_game_timer(self, display):
         time_surface = self.font.render(f"Time: {int(self.elapsed_time)} seconds", True, (0, 0, 0))
         time_rect = time_surface.get_rect(topright=(self.screen_width - 20, 20))
-
         display.blit(time_surface, time_rect)
 
-    def render_game_level(self, display): # displat level
-        level_surface = self.font.render(f"Level: {self.day}", True, (0, 0, 0))
-        level_rect = level_surface.get_rect(topright=(self.screen_width - 450, 20))
+    def render_game_level(self,display):
+        level_surface = self.font.render(f"Level: {self.day}",True,(0,0,0))
+        level_rect = level_surface.get_rect(topright=(self.screen_width - 450,20))
         display.blit(level_surface, level_rect)
 
     def render_leaderboard(self, display):
         display.blit(self.leaderboard_background, (0, 0))
         text_y = 100
-        sorted_leaderboard = sorted(self.combined_data.items(), key=lambda x: x[1])
-        for user_text, time in sorted_leaderboard:
-            rounded_time = int(time)  
-            text_surface = self.font.render(f"{user_text}: {rounded_time} seconds", True, (0, 0, 0))
+        sorted_leaderboard = sorted(self.leaderboard, key=lambda x: x["time"])
+        for entry in sorted_leaderboard:
+            text_surface = self.font.render(f"{int(entry['time'])} seconds", True, (0, 0, 0))
+
             text_rect = text_surface.get_rect(center=(self.screen_width // 2, text_y))
             display.blit(text_surface, text_rect)
             text_y += 50
@@ -322,14 +298,14 @@ class Pet(State):
         self.save_leaderboard()
         self.time_recorded = True
 
-        # Update combined data after recording time
-        self.data.update_combined_data() 
-        self.combined_data = self.data.combined_data  
-
     def enter_leaderboard(self):
         if not self.time_recorded:
             self.record_time()
         self.current_scene = "leaderboard"
 
+    
+
+
     def run(self):
         self.update()
+
