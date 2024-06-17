@@ -3,6 +3,7 @@ import random
 import pygame
 from collecting_coins import Coin
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, images, grid_size, walls, enemies, animation_speed=0.2, initial_position=(0, 0)):
         super().__init__()
@@ -10,10 +11,12 @@ class Player(pygame.sprite.Sprite):
             self.images = images
         else:
             self.images = [images] # ensure images is always treated as a list
+
         self.image_index = 0
         self.image = self.images[self.image_index]
         self.animation_speed = animation_speed
         self.animation_timer = 0
+
         # ensure initial_position is a tuple
         self.rect = self.image.get_rect(topleft=initial_position if isinstance(initial_position, tuple) else (0, 0))
         self.grid_size = grid_size
@@ -25,10 +28,12 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         # update the player's image for animation
         self.animation_timer += dt
+
         if self.animation_timer >= self.animation_speed:
             self.animation_timer = 0
             self.image_index = (self.image_index + 1) % len(self.images)
             self.image = self.images[self.image_index]
+
 
         collided_enemies = pygame.sprite.spritecollide(self, self.enemies, False)
         for enemy in collided_enemies:
@@ -469,3 +474,4 @@ while running and attempt <= hearts_left:
     clock.tick(60)
 
 pygame.quit()
+>>>>>>> main

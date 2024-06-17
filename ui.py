@@ -1,4 +1,5 @@
 import pygame
+import json  
 from setting import *
 from alien import *
 
@@ -18,7 +19,20 @@ class UI:
         self.cleanliness = self.stats['cleanliness'] * 0.1
         self.feeding = self.stats['feeding'] * 0.0
 
-        self.coin = 5
+        # Load collected coins from JSON file
+        self.coin = self.load_collected_coins()
+
+    def load_collected_coins(self):
+        try:
+            with open('collected_coins.json', 'r') as file:
+                data = json.load(file)
+                return data.get('collected_coins', 0)
+        except FileNotFoundError:
+            return 0
+
+    def save_collected_coins(self):
+        with open('collected_coins.json', 'w') as file:
+            json.dump({'collected_coins': self.coin}, file)
 
     def show_bar(self, display, current, max_amount, bg_rect, color):
         pygame.draw.rect(display, UI_BG_COLOR, bg_rect)
@@ -32,24 +46,24 @@ class UI:
         pygame.draw.rect(display, color, current_rect)
         pygame.draw.rect(display, UI_BORDER_COLOR, bg_rect, 3)
 
-
-    def show_coin(self,exp):
-        text_surf = self.font.render(str(int(exp)),False, TEXT_COLOR)
-        x = self.display_surface.get_size()[0] - 20
-        y = self.display_surface.get_size()[1] - 20
-        text_rect = text_surf.get_rect(bottomright = (x,y))
+    def show_coin(self, display, exp):
+        text_surf = self.font.render(str(int(exp)), False, TEXT_COLOR)
+        x = display.get_size()[0] - 20
+        y = display.get_size()[1] - 20
+        text_rect = text_surf.get_rect(bottomright=(x, y))
         
-        pygame.draw.rect(self.display_surface,UI_COIN_BG_COLOR,text_rect.inflate(20,20))
-        self.display_surface.blit(text_surf,text_rect)
-        pygame.draw.rect(self.display_surface,UI_BORDER_COLOR,text_rect.inflate(20,20),3)
 
-    def display(self,display):
-        self.show_bar(display,self.feeding, self.stats['feeding'], self.satiety_bar_rect, SATIETY_COLOR)
-        self.show_bar(display,self.happy, self.stats['happiness'], self.happy_bar_rect, HAPPY_COLOR)
-        self.show_bar(display,self.cleanliness, self.stats['cleanliness'], self.clear_bar_rect, CLEAR_COLOR)
+        pygame.draw.rect(display, UI_COIN_BG_COLOR, text_rect.inflate(20, 20))
+        display.blit(text_surf, text_rect)
+        pygame.draw.rect(display, UI_BORDER_COLOR, text_rect.inflate(20, 20), 3)
 
+    def display(self, display):
+        self.show_bar(display, self.feeding, self.stats['feeding'], self.satiety_bar_rect, SATIETY_COLOR)
+        self.show_bar(display, self.happy, self.stats['happiness'], self.happy_bar_rect, HAPPY_COLOR)
+        self.show_bar(display, self.cleanliness, self.stats['cleanliness'], self.clear_bar_rect, CLEAR_COLOR)
 
-        self.show_coin(self.coin)
+        self.show_coin(display, self.coin)
+
 
     def update(self, deltatime, player_action):
         pass
@@ -58,9 +72,7 @@ class UI:
         pass
 
     def reset_stats(self):
-        self.feeding = 0
-        self.happy = 0
-        self.cleanliness = 0
+     self.happy = 0
 
-    
+
 
