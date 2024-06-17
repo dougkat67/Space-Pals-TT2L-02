@@ -42,8 +42,8 @@ class Pet(State):
         self.time_recorded = False
 
         # Ending images
-        self.happy_ending_images = [pygame.image.load(f'images/happy_ending/happy{i}.png').convert() for i in range(5)]
-        self.bad_ending_images = [pygame.image.load(f'images/bad_ending/bad{i}.png').convert() for i in range(5)]
+        self.happy_ending_images = [pygame.image.load(f'images/happy_ending/happy{i}.png').convert() for i in range(10)]
+        self.bad_ending_images = [pygame.image.load(f'images/bad_ending/bad{i}.png').convert() for i in range(12)]
         self.current_image_index = 0
         self.ending_type = None
 
@@ -98,8 +98,6 @@ class Pet(State):
                     self.current_image_index += 1
                     if self.current_scene == "happy_ending" and self.current_image_index >= len(self.happy_ending_images):
                         self.enter_leaderboard()
-                    elif self.current_scene == "bad_ending" and self.current_image_index >= len(self.bad_ending_images):
-                        self.enter_leaderboard()
                 elif self.button1.rect.collidepoint(event.pos): 
                     self.handle_button1_click()
                 elif self.button2.rect.collidepoint(event.pos):  
@@ -113,7 +111,7 @@ class Pet(State):
 
         current_time = pygame.time.get_ticks()
         self.elapsed_time = (current_time - self.start_time) / 1000
-        if self.elapsed_time > 50 and not self.time_recorded:  # Trigger happy ending
+        if self.day == 6 and self.ui.stats['happiness'] == 100 and not self.time_recorded:  # Trigger happy ending
             self.current_scene = "happy_ending"
             self.record_time()
 
@@ -237,13 +235,16 @@ class Pet(State):
                 main_sound.play(loops = 0)
 
             elif all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 4  : # Day5
-                
+                self.ui.reset_stats()
                 self.monster.monster_select = 17 
                 self.day += 1
                 print(self.day)
                 main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
                 main_sound.set_volume(1)
                 main_sound.play(loops = 0)
+
+            elif all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 5 :
+                self.day +=1
 
 
     def render(self, display, font):
@@ -265,8 +266,6 @@ class Pet(State):
         elif self.current_scene == "bad_ending":
             if self.current_image_index < len(self.bad_ending_images):
                 display.blit(self.bad_ending_images[self.current_image_index], (0, 0))
-            else:
-                self.enter_leaderboard()
  
     def render_game_timer(self, display): # display seconds
         time_surface = self.font.render(f"Time: {int(self.elapsed_time)} seconds", True, (0, 0, 0))

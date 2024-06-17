@@ -1,5 +1,6 @@
 import sys
 import pygame
+import json
 from collecting_coins import Coin
 from states.state import State
 
@@ -198,6 +199,9 @@ class Level1(State):
             message_color = (255, 0, 0)  # Red for time's up
             message_text = "Time's up!"
         elif self.player_won:
+            data = {'collected_coins': collected_coins}
+            with open('collected_coins.json', 'w') as json_file:
+                json.dump(data, json_file)
             message_color = (0, 255, 0)  # Green for win message
             message_text = "You win!"
 
