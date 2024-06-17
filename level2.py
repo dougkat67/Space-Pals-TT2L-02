@@ -9,7 +9,10 @@ class Level2(State):
         self.game = game
         self.walls = []  # list to hold the walls
         self.grid_cell_size = 25
+<<<<<<< HEAD
         self.health = Health(game)
+=======
+>>>>>>> main
         
 
         # Load images with error handling
@@ -27,10 +30,17 @@ class Level2(State):
             self.spaceship_image = pygame.transform.scale(pygame.image.load('images/spaceship.png'), (60, 35))
 
             self.alien_images = [
+<<<<<<< HEAD
                 pygame.transform.scale(pygame.image.load('images/alien_0.png'), (45, 45)),
                 pygame.transform.scale(pygame.image.load('images/alien_1.png'), (45, 45)),
                 pygame.transform.scale(pygame.image.load('images/alien_2.png'), (45, 45)),
                 pygame.transform.scale(pygame.image.load('images/alien_3.png'), (45, 45))
+=======
+                pygame.transform.scale(pygame.image.load('images/alien2_0.png'), (45, 45)),
+                pygame.transform.scale(pygame.image.load('images/alien2_1.png'), (45, 45)),
+                pygame.transform.scale(pygame.image.load('images/alien2_2.png'), (45, 45)),
+                pygame.transform.scale(pygame.image.load('images/alien2_3.png'), (45, 45))
+>>>>>>> main
             ]
         except pygame.error as e:
             print(f"Error loading image: {e}")
@@ -70,6 +80,13 @@ class Level2(State):
         self.attempt_text = self.font.render(f"Attempt : {self.attempt}/3", True, (255, 255, 255))
         self.attempt_text_rect = self.attempt_text.get_rect(center=(self.screen_width // 2, 25))
 
+<<<<<<< HEAD
+=======
+        self.num_hearts = 3
+        self.heart_spacing = 40
+        self.heart_position = (10, 10)
+
+>>>>>>> main
         self.coin_positions = [(1, 6), (1, 17), (4, 14), (4, 9), (7, 3), 
                   (9, 14), (10, 7), (13, 9), (13, 15), (16, 3), 
                   (20, 14), (20, 11), (22, 17), (23, 6), (29, 9),
@@ -83,6 +100,7 @@ class Level2(State):
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
 
+<<<<<<< HEAD
         self.enemy_image = pygame.transform.scale(pygame.image.load('images/enemy.png'),(67.75, 38.75))
         enemy_initial_position = [(38 * self.grid_cell_size, 14 * self.grid_cell_size), (5 * self.grid_cell_size, 3 * self.grid_cell_size)]
         enemy = Enemies(self.enemy_image, self.grid_cell_size, self.walls, self.player, enemy_initial_position)
@@ -91,11 +109,17 @@ class Level2(State):
         self.num_collisions= 0
         self.hearts_left = 3
 
+=======
+>>>>>>> main
         self.collected_coins = 0
         self.total_coins = len(self.coins)
         self.coin_image = pygame.image.load('images/coin_0.png')
 
+<<<<<<< HEAD
         self.time_limit = 25  
+=======
+        self.time_limit = 30  
+>>>>>>> main
         self.current_time = 0
         self.timer_font = pygame.font.Font(None, 36)
 
@@ -127,6 +151,31 @@ class Level2(State):
     def reset_coins(self):
         self.coins = [Coin(self.grid_cell_size, pos, self.coin_images) for pos in self.coin_positions]
 
+<<<<<<< HEAD
+=======
+    def display_hearts(self, display, attempt):
+        for i in range(self.num_hearts):
+            if attempt == 1:
+                display.blit(self.heart_image, (self.heart_position[0] + i * self.heart_spacing, self.heart_position[1]))
+            elif attempt == 2:
+                if i < 2:
+                    display.blit(self.heart_image, (self.heart_position[0] + i * self.heart_spacing, self.heart_position[1]))
+                else:
+                    bw_heart_image = self.heart_image.convert()
+                    bw_heart_image = bw_heart_image.convert_alpha()
+                    bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
+                    display.blit(bw_heart_image, (self.heart_position[0] + i * self.heart_spacing, self.heart_position[1]))
+            elif attempt == 3:
+                if i == 0:
+                    display.blit(self.heart_image, (self.heart_position[0] + i * self.heart_spacing, self.heart_position[1]))
+                else:
+                    bw_heart_image = self.heart_image.convert()
+                    bw_heart_image = bw_heart_image.convert_alpha()
+                    bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
+                    display.blit(bw_heart_image, (self.heart_position[0] + i * self.heart_spacing, self.heart_position[1]))
+
+
+>>>>>>> main
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -171,8 +220,11 @@ class Level2(State):
             coin.update(self.game.clock.get_time() / 1000.0)
             display.blit(coin.image, coin.rect)
 
+<<<<<<< HEAD
         self.health.render(display)
 
+=======
+>>>>>>> main
         self.all_sprites.draw(display)
 
         # Display attempt text
@@ -188,6 +240,7 @@ class Level2(State):
         self.timer_text = self.timer_font.render(f"Time: {int(remaining_time)}", True, (255, 255, 255))
         display.blit(self.timer_text, self.timer_text_rect)
 
+<<<<<<< HEAD
         # Display end game messages if conditions are met
         if self.time_up and not self.player_won:
             message_color = (255, 0, 0)  # Red for time's up
@@ -201,6 +254,9 @@ class Level2(State):
             end_text_rect = end_text.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
             display.blit(end_text, end_text_rect)
 
+=======
+        
+>>>>>>> main
         # Check end game conditions
         if self.time_up and not self.player_won:
             self.attempt += 1
@@ -212,8 +268,38 @@ class Level2(State):
                 self.collected_coins = 0
                 # update attempt text for the next attempt
                 self.attempt_text = self.font.render(f"Attempt : {self.attempt}", True, (255, 255, 255))
+<<<<<<< HEAD
 
                 self.reset_coins()
+=======
+                self.reset_coins()
+            else:
+                self.exit_state()
+
+        # Display end game messages if conditions are met
+        if self.time_up and not self.player_won :
+            message_color = (255, 0, 0)  # Red for time's up
+            message_text = "Time's up!" 
+
+        elif self.player_won:
+            message_color = (0, 255, 0)  # Green for win message
+            message_text = "You win!" 
+            self.exit_state()
+
+        elif self.attempt == 4:
+            message_color = (255, 0, 0)  # Red for time's up
+            message_text = "Game over!" 
+            self.exit_state()
+
+
+        if self.time_up or self.player_won:
+            end_text = self.end_message_font.render(message_text, True, message_color)
+            end_text_rect = end_text.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
+            display.blit(end_text, end_text_rect)
+
+
+        self.display_hearts(display,self.attempt)
+>>>>>>> main
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, images, grid_size, walls, animation_speed=0.2, initial_position=(0, 0)):
@@ -239,11 +325,14 @@ class Player(pygame.sprite.Sprite):
             self.image_index = (self.image_index + 1) % len(self.images)
             self.image = self.images[self.image_index]
 
+<<<<<<< HEAD
         if self.rect.colliderect(self.enemy.rect):
             self.collide_with_enemy()
             return True  # Return True to indicate collision
         
         return False  # Return False if no collision
+=======
+>>>>>>> main
 
     def move(self, dx, dy):
         self.rect.x += dx * self.grid_size
@@ -271,6 +360,7 @@ class Player(pygame.sprite.Sprite):
         if self.num_collisions == 0:
            self.hearts_left -= 1
            self.num_collisions += 1
+<<<<<<< HEAD
 
     def render(self, display, font):
         pass
@@ -325,6 +415,12 @@ class Enemies(pygame.sprite.Sprite):
     def render(self, display):
         pass
 
+=======
+
+    def render(self, display, font):
+        pass
+
+>>>>>>> main
 class Wall:
     def __init__(self, pos, walls, grid_cell_size):
         walls.append(self)
@@ -339,6 +435,7 @@ class Wall:
     def render(self, display, font):
         pass
 
+<<<<<<< HEAD
 class Health():
     def __init__(self, game):
         self.game = game
@@ -362,3 +459,5 @@ class Health():
                 display.blit(self.heart,(60,10))
         elif self.hearts_left == 1:
                 display.blit(self.heart,(20,10))
+=======
+>>>>>>> main
