@@ -4,7 +4,7 @@ import pygame
 class Button():
     def __init__(self, game):
         self.game = game
-        image = pygame.image.load("WIP_art/start_button.png").convert_alpha()
+        image = pygame.image.load("images/start_button.png").convert_alpha()
         self.button = pygame.transform.scale(image,(300,200))
         self.rect = self.button.get_rect()
         self.rect.x, self.rect.y = 350, 270
