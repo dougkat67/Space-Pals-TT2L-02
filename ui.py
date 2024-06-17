@@ -52,6 +52,7 @@ class UI:
         y = display.get_size()[1] - 20
         text_rect = text_surf.get_rect(bottomright=(x, y))
         
+
         pygame.draw.rect(display, UI_COIN_BG_COLOR, text_rect.inflate(20, 20))
         display.blit(text_surf, text_rect)
         pygame.draw.rect(display, UI_BORDER_COLOR, text_rect.inflate(20, 20), 3)
@@ -63,6 +64,7 @@ class UI:
 
         self.show_coin(display, self.coin)
 
+
     def update(self, deltatime, player_action):
         pass
 
@@ -70,5 +72,7 @@ class UI:
         pass
 
     def reset_stats(self):
-        
-        self.happy = 0
+     self.happy = 0
+
+
+

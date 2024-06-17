@@ -38,12 +38,14 @@ class Naming(State):
         self.color = self.color_active if self.active else self.color_passive
         self.actions = self.game.actions
 
-        if self.actions["play"]:
+        if self.actions["play"] and self.user_text:
+
             new_state = Pet(self.game)
             new_state.enter_state()  
         self.game.reset_keys()
 
     def render(self, display, font):
+
         display.blit(self.naming_image, (0, 0))
         self.game.draw_text(display, "You encountered an interesting looking alien egg.", (0, 0, 0), 500, 50, font)
         self.game.draw_text(display, "It's hatching!", (0, 0, 0), 500, 100, font)
@@ -53,6 +55,7 @@ class Naming(State):
         self.text_surface = self.naming_font.render(self.user_text, True, (0, 0, 0))
         display.blit(self.text_surface, (self.input_rect.x + 5, self.input_rect.y + 5))
         self.input_rect.w = max(200, self.text_surface.get_width() + 10)
+
 
     def reset_keys(self):
         for action in self.game.actions:

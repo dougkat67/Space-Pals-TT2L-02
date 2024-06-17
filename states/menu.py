@@ -26,7 +26,6 @@ class Menu(State):
 
     def render(self, display, font):
         display.blit(self.menu_image, (0,0))
-        self.game.draw_text(display, "Main Menu", (0,0,0), 500, 45, font)
         self.button.render(display)
 
      

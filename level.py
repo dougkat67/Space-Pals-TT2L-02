@@ -23,6 +23,7 @@ class Pet(State):
         self.visible_sprites = pygame.sprite.Group()
         self.font = pygame.font.Font(None, 36)
 
+
         # Background
         self.background = pygame.image.load('background.png').convert()
         self.background = pygame.transform.scale(self.background, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -49,6 +50,7 @@ class Pet(State):
         self.load_user_text()
 
         # File load
+
         self.monster = Alien((400, 350))
         self.button1 = Button1((110, 350), self.visible_sprites)
         self.button2 = Button2((110, 350), self.visible_sprites)
@@ -65,6 +67,15 @@ class Pet(State):
         main_sound.play(loops=-1)
 
         self.elapsed_time = 0
+
+        self.click = False
+        self.eat = False
+        self.bath = False
+        self.entertain = False
+
+        # Day
+
+
         self.day = 1
         self.last_button_click_time = pygame.time.get_ticks()
         self.current_scene = "game"
@@ -98,6 +109,7 @@ class Pet(State):
                 elif self.button5.rect.collidepoint(event.pos):  
                     self.current_scene = "bad_ending"
                 
+
 
         current_time = pygame.time.get_ticks()
         self.elapsed_time = (current_time - self.start_time) / 1000
@@ -180,6 +192,7 @@ class Pet(State):
         with open('user_text.json', 'w') as file:
             json.dump({"user_text": self.user_text}, file)
 
+
     def update(self,deltatime,actions):
             self.monster.update()
             current_time = pygame.time.get_ticks() # get current time
@@ -190,7 +203,7 @@ class Pet(State):
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                
+
                     
 
             # Alien grow
@@ -232,6 +245,7 @@ class Pet(State):
                 main_sound.set_volume(1)
                 main_sound.play(loops = 0)
 
+
     def render(self, display, font):
         if self.current_scene == "game":
             display.blit(self.background, (0, 0))
@@ -242,6 +256,7 @@ class Pet(State):
             self.render_game_level(display)
         elif self.current_scene == "leaderboard": # switch to leaderboard
             self.render_leaderboard(display)
+
         elif self.current_scene == "happy_ending":
             if self.current_image_index < len(self.happy_ending_images):
                 display.blit(self.happy_ending_images[self.current_image_index], (0, 0))
@@ -256,6 +271,7 @@ class Pet(State):
     def render_game_timer(self, display): # display seconds
         time_surface = self.font.render(f"Time: {int(self.elapsed_time)} seconds", True, (0, 0, 0))
         time_rect = time_surface.get_rect(topright=(self.screen_width - 20, 20))
+
         display.blit(time_surface, time_rect)
 
     def render_game_level(self, display): # displat level
