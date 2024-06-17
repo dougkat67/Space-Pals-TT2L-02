@@ -3,11 +3,12 @@ import pygame
 class Button4(pygame.sprite.Sprite):
     def __init__(self, pos, groups):
         super().__init__(groups)
-        self.image = pygame.image.load('images/drinkingbutton.png').convert_alpha()
+        image = pygame.image.load('images/minigame_button.png').convert_alpha()
+        new_size = (200,125)
+        self.image = pygame.transform.scale(image, new_size)
         self.rect = self.image.get_rect(center=(700,450))
-       
 
-    def update(self, deltatime, player_action):
+    def update(self):
         pass
 
     def render(self, display):
