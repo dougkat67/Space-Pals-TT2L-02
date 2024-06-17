@@ -7,13 +7,18 @@ from alien import Alien
 from button import Button1
 from button2 import Button2
 from button3 import Button3
+from button4 import Button4
 from setting import SCREEN_WIDTH, SCREEN_HEIGHT
 from ui import UI
 from setting import *
 from states.state import State
+from level1 import Level1
+from level2 import Level2
+from level3 import Level3
+from level4 import Level4
+from level5 import Level5
 from button5 import Button5
 from data import Data
-
 
 class Pet(State):
     def __init__(self, game):
@@ -22,10 +27,7 @@ class Pet(State):
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.visible_sprites = pygame.sprite.Group()
         self.font = pygame.font.Font(None, 36)
-
-
-        # Background
-        self.background = pygame.image.load('background.png').convert()
+        self.background = pygame.image.load('images/background.png').convert()
         self.background = pygame.transform.scale(self.background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
         # Leaderboard background
@@ -55,16 +57,24 @@ class Pet(State):
         self.button1 = Button1((110, 350), self.visible_sprites)
         self.button2 = Button2((110, 350), self.visible_sprites)
         self.button3 = Button3((110, 350), self.visible_sprites)
+
+        self.button4 = Button4((110, 350), self.visible_sprites)
+
         self.button5 = Button5((55, 175), self.visible_sprites)
         
         self.data = Data((0, 0), self.visible_sprites)  
+
 
         self.ui = UI()
 
         # Sound 
         main_sound = pygame.mixer.Sound('audio/song.mp3')
         main_sound.set_volume(0.5)
-        main_sound.play(loops=-1)
+
+        main_sound.play(loops = -1)
+
+        # OTHER variable
+        
 
         self.elapsed_time = 0
 
@@ -75,11 +85,20 @@ class Pet(State):
 
         # Day
 
-
         self.day = 1
-        self.last_button_click_time = pygame.time.get_ticks()
+        self.last_button_click_time = pygame.time.get_ticks() 
         self.current_scene = "game"
         self.start_time = pygame.time.get_ticks()
+        
+    def handle_events(self, events):
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.button4.rect.collidepoint(event.pos):
+                    new_state = Level1(self.game)
+                    new_state.enter_state()  # Adds the new state to the top of the stack
+
+        self.button4.update()
+        self.game.reset_keys()
 
         if os.path.exists("leaderboard.json"):
             with open("leaderboard.json", "r") as file:
@@ -108,10 +127,10 @@ class Pet(State):
                     self.handle_button3_click()
                 elif self.button5.rect.collidepoint(event.pos):  
                     self.current_scene = "bad_ending"
-                
-
+            
 
         current_time = pygame.time.get_ticks()
+
         self.elapsed_time = (current_time - self.start_time) / 1000
         if self.elapsed_time > 50 and not self.time_recorded:  # Trigger happy ending
             self.current_scene = "happy_ending"
@@ -204,10 +223,13 @@ class Pet(State):
                     pygame.quit()
                     sys.exit()
 
+
                     
+            if not pygame.mouse.get_pressed()[0]:
+                self.click = False    
 
             # Alien grow
-
+    
             if all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 1  : # Day2
                 self.ui.reset_stats() # Reset stats
                 self.monster.monster_select = 5 

@@ -11,6 +11,7 @@ class Level1(State):
         self.game = game
         self.walls = []  # list to hold the walls
         self.grid_cell_size = 50
+        self.game_state = None
         
         # Load images with error handling
         try:
@@ -82,7 +83,7 @@ class Level1(State):
         self.total_coins = len(self.coins)
         self.coin_image = pygame.image.load('images/coin_0.png')
 
-        self.time_limit = 10  # 10 seconds
+        self.time_limit = 10  
         self.current_time = 0
         self.timer_font = pygame.font.Font(None, 36)
 
@@ -149,6 +150,7 @@ class Level1(State):
                     self.player.move(0, 1)  # Move down
     
     def update(self, deltatime, actions):
+        super().update(deltatime, actions)
         self.current_time += self.game.clock.tick(60) / 1000.0  # Convert milliseconds to seconds
 
         # Check for collision with the exit
@@ -193,18 +195,6 @@ class Level1(State):
         self.timer_text = self.timer_font.render(f"Time: {int(remaining_time)}", True, (255, 255, 255))
         display.blit(self.timer_text, self.timer_text_rect)
 
-        # Display end game messages if conditions are met
-        if self.time_up and not self.player_won:
-            message_color = (255, 0, 0)  # Red for time's up
-            message_text = "Time's up!"
-        elif self.player_won:
-            message_color = (0, 255, 0)  # Green for win message
-            message_text = "You win!"
-
-        if self.time_up or self.player_won:
-            end_text = self.end_message_font.render(message_text, True, message_color)
-            end_text_rect = end_text.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
-            display.blit(end_text, end_text_rect)
 
         # Check end game conditions
         if self.time_up and not self.player_won:
@@ -218,6 +208,29 @@ class Level1(State):
                 # update attempt text for the next attempt
                 self.attempt_text = self.font.render(f"Attempt : {self.attempt}", True, (255, 255, 255))
                 self.reset_coins()
+            else:
+                self.exit_state()
+
+         # Display end game messages if conditions are met
+        if self.time_up and not self.player_won :
+            message_color = (255, 0, 0)  # Red for time's up
+            message_text = "Time's up!" 
+
+        elif self.player_won:
+            message_color = (0, 255, 0)  # Green for win message
+            message_text = "You win!" 
+            self.exit_state()
+
+        elif self.attempt == 4:
+            message_color = (255, 0, 0)  # Red for time's up
+            message_text = "Game over!" 
+            self.exit_state()
+
+        if self.time_up or self.player_won:
+            end_text = self.end_message_font.render(message_text, True, message_color)
+            end_text_rect = end_text.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
+            display.blit(end_text, end_text_rect)
+
 
         # Display hearts for attempts
         self.display_hearts(display,self.attempt)
