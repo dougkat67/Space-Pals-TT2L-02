@@ -7,7 +7,9 @@ class Naming(State):
     def __init__(self, game):
         super().__init__(game)  
         self.game = game
-        self.naming_image = pygame.image.load("WIP_art/naming_page.png").convert()
+        self.naming_image = pygame.image.load("images/naming_page.png").convert()
+        egg_image = pygame.image.load("images/naming_egg.png").convert_alpha()
+        self.egg_image = pygame.transform.scale(egg_image, (350,350))
         self.naming_font = pygame.font.SysFont("Pixeltype Regular", 50, False, False)
         self.user_text = ""
         self.input_rect = pygame.Rect(500, 450, 200, 32)  
@@ -39,14 +41,13 @@ class Naming(State):
         self.actions = self.game.actions
 
         if self.actions["play"] and self.user_text:
-
             new_state = Pet(self.game)
             new_state.enter_state()  
         self.game.reset_keys()
 
     def render(self, display, font):
-
         display.blit(self.naming_image, (0, 0))
+        display.blit(self.egg_image, (320, 70))
         self.game.draw_text(display, "You encountered an interesting looking alien egg.", (0, 0, 0), 500, 50, font)
         self.game.draw_text(display, "It's hatching!", (0, 0, 0), 500, 100, font)
         self.game.draw_text(display, "Name the egg: ", (0, 0, 0), 300, 470, font)
