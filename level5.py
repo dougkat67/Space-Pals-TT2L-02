@@ -2,6 +2,7 @@ import sys
 import pygame
 from collecting_coins import Coin
 from states.state import State
+import json
 
 class Level5(State):
     def __init__(self, game):
@@ -9,6 +10,11 @@ class Level5(State):
         self.game = game
         self.walls = []  # list to hold the walls
         self.grid_cell_size = 25
+
+        self.data = {
+            'coins': 0
+        }
+
         
         # Load images with error handling
         try:
@@ -161,12 +167,15 @@ class Level5(State):
         # Check for collision with the exit
         if self.player.rect.colliderect(self.end_rect):
             self.player_won = True
+            self.save_collected_coins()
 
         # Check for collision with coins and collect them
         for coin in self.coins:
             if self.player.rect.colliderect(coin.rect):
                 self.collected_coins += coin.collect()
                 self.coins.remove(coin)
+                self.data['coins'] += 1
+                self.save_collected_coins()
 
         # Update all sprites
         self.all_sprites.update(deltatime, actions)
@@ -238,6 +247,9 @@ class Level5(State):
             display.blit(end_text, end_text_rect)
 
         self.display_hearts(display,self.attempt)
+    def save_collected_coins(self):
+         with open('coins.json', 'w') as file:
+            json.dump(self.data, file)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, images, grid_size, walls, animation_speed=0.2, initial_position=(0, 0)):
