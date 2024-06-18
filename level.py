@@ -31,7 +31,7 @@ class Pet(State):
         self.background = pygame.transform.scale(self.background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
         # Leaderboard background
-        self.leaderboard_background = pygame.image.load('leaderboard.jpg').convert()
+        self.leaderboard_background = pygame.image.load('images/leaderboard.jpg').convert()
         self.leaderboard_background = pygame.transform.scale(self.leaderboard_background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
         self.last_button_click_time = pygame.time.get_ticks()

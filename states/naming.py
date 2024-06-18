@@ -1,7 +1,7 @@
 import pygame
 import json 
 from states.state import State
-from level import Pet
+from states.instructions import Instruction
 
 class Naming(State):
     def __init__(self, game):
@@ -27,6 +27,10 @@ class Naming(State):
                     self.active = False
 
             if event.type == pygame.KEYDOWN and self.active:
+                if self.actions["play"] and self.user_text:
+                    new_state = Instruction(self.game)
+                    new_state.enter_state()  
+                    self.game.reset_keys()
                 if event.key == pygame.K_BACKSPACE:
                     self.user_text = self.user_text[0:-1]
                 else:
@@ -40,10 +44,6 @@ class Naming(State):
         self.color = self.color_active if self.active else self.color_passive
         self.actions = self.game.actions
 
-        if self.actions["play"] and self.user_text:
-            new_state = Pet(self.game)
-            new_state.enter_state()  
-        self.game.reset_keys()
 
     def render(self, display, font):
         display.blit(self.naming_image, (0, 0))

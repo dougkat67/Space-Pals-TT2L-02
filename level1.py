@@ -12,6 +12,10 @@ class Level1(State):
         self.walls = []  # list to hold the walls
         self.grid_cell_size = 50
         self.game_state = None
+
+        #coin sfx
+        self.coin_sound = pygame.mixer.Sound('audio/coin.mp3')
+        self.coin_sound.set_volume(0.2)
         
         # Load images with error handling
         try:
@@ -83,7 +87,7 @@ class Level1(State):
         self.total_coins = len(self.coins)
         self.coin_image = pygame.image.load('images/coin_0.png')
 
-        self.time_limit = 10  
+        self.time_limit = 15  
         self.current_time = 0
         self.timer_font = pygame.font.Font(None, 36)
 
@@ -160,6 +164,7 @@ class Level1(State):
         # Check for collision with coins and collect them
         for coin in self.coins:
             if self.player.rect.colliderect(coin.rect):
+                self.coin_sound.play()
                 self.collected_coins += coin.collect()
                 self.coins.remove(coin)
 
