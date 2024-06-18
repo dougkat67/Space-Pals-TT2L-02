@@ -111,9 +111,11 @@ class Pet(State):
                     elif self.mini_game == 3 and self.day == 3:
                         new_state = Level3(self.game)
                         new_state.enter_state()
+                        self.mini_game += 1
                     elif self.mini_game == 4 and self.day == 4:
                         new_state = Level4(self.game)
                         new_state.enter_state()
+                        self.mini_game += 1
                     elif self.mini_game == 5 and self.day == 5:
                         new_state = Level5(self.game)
                         new_state.enter_state()

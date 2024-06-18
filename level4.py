@@ -100,7 +100,7 @@ class Level4(State):
         self.total_coins = len(self.coins)
         self.coin_image = pygame.image.load('images/coin_0.png')
 
-        self.time_limit = 40
+        self.time_limit = 35
         self.current_time = 0
         self.timer_font = pygame.font.Font(None, 36)
 
