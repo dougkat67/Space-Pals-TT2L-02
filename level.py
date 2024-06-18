@@ -40,7 +40,7 @@ class Pet(State):
     
 
         # Ending images
-        self.happy_ending_images = [pygame.image.load(f'images/happy_ending/happy{i}.png').convert() for i in range(10)]
+        self.happy_ending_images = [pygame.image.load(f'images/happy_ending/happy{i}.png').convert() for i in range(11)]
         self.bad_ending_images = [pygame.image.load(f'images/bad_ending/bad{i}.png').convert() for i in range(12)]
         self.current_image_index = 0
         self.ending_type = None
@@ -103,19 +103,19 @@ class Pet(State):
                     if self.mini_game == 1:
                         new_state = Level1(self.game)
                         new_state.enter_state()
-                        self.mini_game += 1
+                        
                     elif self.mini_game == 2 and self.day == 2:
                         new_state = Level2(self.game)
                         new_state.enter_state()
-                        self.mini_game += 1
+                        
                     elif self.mini_game == 3 and self.day == 3:
                         new_state = Level3(self.game)
                         new_state.enter_state()
-                        self.mini_game += 1
+                        
                     elif self.mini_game == 4 and self.day == 4:
                         new_state = Level4(self.game)
                         new_state.enter_state()
-                        self.mini_game += 1
+                        
                     elif self.mini_game == 5 and self.day == 5:
                         new_state = Level5(self.game)
                         new_state.enter_state()
@@ -229,6 +229,7 @@ class Pet(State):
             self.ui.reset_stats()  # Reset stats
             self.monster.monster_select = 5
             self.day += 1
+            self.mini_game += 1
             print(self.day)
             main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')  # sound
             main_sound.set_volume(1)
@@ -238,12 +239,14 @@ class Pet(State):
             self.monster.monster_select = 9
             self.day += 1
             print(self.day)
+            self.mini_game += 1
             main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
             main_sound.set_volume(1)
             main_sound.play(loops=0)
         elif all([self.ui.happy >= self.ui.stats['happiness']]) and self.day == 3:  # Day4
             self.ui.reset_stats()
             self.monster.monster_select = 13
+            self.mini_game += 1
             self.day += 1
             print(self.day)
             main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
@@ -253,6 +256,7 @@ class Pet(State):
             self.ui.reset_stats()
             self.monster.monster_select = 17
             self.day += 1
+            self.mini_game += 1
             print(self.day)
             main_sound = pygame.mixer.Sound('audio/Upgrade.mp3')
             main_sound.set_volume(1)
