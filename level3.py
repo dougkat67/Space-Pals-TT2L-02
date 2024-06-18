@@ -2,6 +2,7 @@ import sys
 import pygame
 from collecting_coins import Coin
 from states.state import State
+import json
 
 class Level3(State):
     def __init__(self, game):
@@ -14,6 +15,9 @@ class Level3(State):
         self.coin_sound = pygame.mixer.Sound('audio/coin.mp3')
         self.coin_sound.set_volume(0.2)
         
+        self.data = {
+            'coins': 0
+        }
         
         # Load images with error handling
         try:
@@ -167,12 +171,15 @@ class Level3(State):
         # Check for collision with the exit
         if self.player.rect.colliderect(self.end_rect):
             self.player_won = True
+            self.save_collected_coins()
 
         # Check for collision with coins and collect them
         for coin in self.coins:
             if self.player.rect.colliderect(coin.rect):
                 self.coin_sound.play()
                 self.collected_coins += coin.collect()
+                self.data['coins'] += 1
+                self.save_collected_coins() # json
                 self.coins.remove(coin)
 
         # Update all sprites
@@ -246,6 +253,10 @@ class Level3(State):
             display.blit(end_text, end_text_rect)
 
         self.display_hearts(display,self.attempt)
+
+    def save_collected_coins(self):
+         with open('coins.json', 'w') as file:
+            json.dump(self.data, file)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, images, grid_size, walls, animation_speed=0.2, initial_position=(0, 0)):

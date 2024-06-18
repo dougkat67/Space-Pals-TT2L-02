@@ -8,7 +8,7 @@ class Alien(pygame.sprite.Sprite):
         self.animation_timer = 0
         self.frame = 0
         self.monster_select = 1
-        self.load_images()  # Call load_images method to load images
+        self.load_images() 
 
     def load_images(self):
         # Loading area

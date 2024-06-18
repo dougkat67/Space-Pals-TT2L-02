@@ -1,9 +1,8 @@
 import sys
 import pygame
+import json
 from collecting_coins import Coin
 from states.state import State
-
-
 
 class Level1(State):
     def __init__(self, game):
@@ -13,10 +12,20 @@ class Level1(State):
         self.grid_cell_size = 50
         self.game_state = None
 
+
         #coin sfx
         self.coin_sound = pygame.mixer.Sound('audio/coin.mp3')
         self.coin_sound.set_volume(0.2)
         
+
+        self.exit = 0
+
+        # Define data as an instance variable
+        self.data = {
+            'coins': 0
+        }
+
+
         # Load images with error handling
         try:
             self.heart_image = pygame.image.load('images/heart.png')
@@ -111,7 +120,7 @@ class Level1(State):
     def parse_level(self):
         for y, row in enumerate(self.level):
             for x, col in enumerate(row):
-                if col == "W":
+                if (col == "W"):
                     Wall((x * self.grid_cell_size, y * self.grid_cell_size), self.walls, self.grid_cell_size)
                 if col == "E":
                     self.end_rect = pygame.Rect(x * self.grid_cell_size, y * self.grid_cell_size, self.grid_cell_size, self.grid_cell_size)
@@ -140,7 +149,6 @@ class Level1(State):
                     bw_heart_image.fill((128, 128, 128, 255), None, pygame.BLEND_RGB_MULT)
                     display.blit(bw_heart_image, (self.heart_position[0] + i * self.heart_spacing, self.heart_position[1]))
 
-
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -160,12 +168,15 @@ class Level1(State):
         # Check for collision with the exit
         if self.player.rect.colliderect(self.end_rect):
             self.player_won = True
+            self.save_collected_coins()  # Save coins to JSON
 
         # Check for collision with coins and collect them
         for coin in self.coins:
             if self.player.rect.colliderect(coin.rect):
                 self.coin_sound.play()
                 self.collected_coins += coin.collect()
+                self.data['coins'] += 1
+                self.save_collected_coins()  # Save coins to JSON dynamically
                 self.coins.remove(coin)
 
         # Update all sprites
@@ -200,7 +211,6 @@ class Level1(State):
         self.timer_text = self.timer_font.render(f"Time: {int(remaining_time)}", True, (255, 255, 255))
         display.blit(self.timer_text, self.timer_text_rect)
 
-
         # Check end game conditions
         if self.time_up and not self.player_won:
             self.attempt += 1
@@ -216,15 +226,24 @@ class Level1(State):
             else:
                 self.exit_state()
 
-         # Display end game messages if conditions are met
-        if self.time_up and not self.player_won :
+        self.collected_text = self.font.render(f"Collected: {self.collected_coins}/{self.total_coins}", True, (255, 255, 255))
+
+        # Display end game messages if conditions are met
+        if self.time_up and not self.player_won:
             message_color = (255, 0, 0)  # Red for time's up
             message_text = "Time's up!" 
 
         elif self.player_won:
             message_color = (0, 255, 0)  # Green for win message
             message_text = "You win!" 
-            self.exit_state()
+
+            self.coin_earn = self.collected_coins
+            
+
+            self.exit += 1
+            if self.player_won and self.exit == 1:
+                print(f"{self.collected_coins}")
+                self.exit_state()
 
         elif self.attempt == 4:
             message_color = (255, 0, 0)  # Red for time's up
@@ -236,10 +255,12 @@ class Level1(State):
             end_text_rect = end_text.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
             display.blit(end_text, end_text_rect)
 
-
         # Display hearts for attempts
-        self.display_hearts(display,self.attempt)
+        self.display_hearts(display, self.attempt)
 
+    def save_collected_coins(self):
+        with open('coins.json', 'w') as file:
+            json.dump(self.data, file)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, images, grid_size, walls, animation_speed=0.2, initial_position=(0, 0)):
@@ -299,7 +320,5 @@ class Wall:
     def update(self, deltatime, actions):
         pass
 
-
     def render(self, display, font):
         pass
-

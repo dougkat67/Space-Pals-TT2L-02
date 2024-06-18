@@ -44,7 +44,6 @@ class Naming(State):
         self.color = self.color_active if self.active else self.color_passive
         self.actions = self.game.actions
 
-
     def render(self, display, font):
         display.blit(self.naming_image, (0, 0))
         display.blit(self.egg_image, (320, 70))
@@ -56,7 +55,6 @@ class Naming(State):
         self.text_surface = self.naming_font.render(self.user_text, True, (0, 0, 0))
         display.blit(self.text_surface, (self.input_rect.x + 5, self.input_rect.y + 5))
         self.input_rect.w = max(200, self.text_surface.get_width() + 10)
-
 
     def reset_keys(self):
         for action in self.game.actions:
