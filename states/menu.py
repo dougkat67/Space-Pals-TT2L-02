@@ -5,8 +5,9 @@ import pygame
 
 class Menu(State):
     def __init__(self, game):
+        super().__init__(game)
         self.game = game
-        self.menu_image = pygame.image.load("WIP_art/main_menu.png").convert()
+        self.menu_image = pygame.image.load("images/main_menu.png").convert()
         self.button = Button(self.game)
 
     def handle_events(self, events):
