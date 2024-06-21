@@ -1,0 +1,73 @@
+4840af4 edited level.py file
+ 4 files changed, 13 insertions(+), 7 deletions(-)
+9492f69 cleaned up folder
+ 24 files changed, 1 insertion(+), 624 deletions(-)
+12b00d5 test
+ 11 files changed, 2 insertions(+), 4 deletions(-)
+785e518 final update
+ 27 files changed, 8 insertions(+), 10 deletions(-)
+61ae47a pycache
+e940e7f added coin audio and finalized leaderboard.py
+ 27 files changed, 110 insertions(+), 119 deletions(-)
+287aa00 added egg image in naming.py
+ 35 files changed, 110 insertions(+), 16 deletions(-)
+fac7957 pycache
+557ccc9 finalized and modularized all minigame levels
+ 21 files changed, 1191 insertions(+), 1712 deletions(-)
+d885375 finalized and restructured level1 minigame.
+ 1 file changed, 248 insertions(+), 303 deletions(-)
+26d9225 pycache
+160b8b1 added minigame alien images and edited minigame levels.
+ 21 files changed, 583 insertions(+), 338 deletions(-)
+c9308d8 fix minigame healthbar kinda
+ 1 file changed, 49 insertions(+), 31 deletions(-)
+b5d8291 deleted unneeded files and edited files.
+ 15 files changed, 7 insertions(+), 260 deletions(-)
+879088f pycache
+84a9d6e edited minigame and level file.
+ 7 files changed, 192 insertions(+), 134 deletions(-)
+962ccd6  added minigame level5.
+ 1 file changed, 104 insertions(+)
+019305e test contribution
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+96e95c2 added new files and edited mingfengs code.
+ 24 files changed, 451 insertions(+), 110 deletions(-)
+1fd85a5 Merge branch 'huiyingbranch' into isabranch
+faf4225 pycache
+ad990d9 pycache and edited files
+ 16 files changed, 13 insertions(+), 12 deletions(-)
+bb411bf added instructions.py file
+ 1 file changed, 24 insertions(+)
+3c39332 edited clock.py file
+ 1 file changed, 39 insertions(+), 7 deletions(-)
+204ab32 edited files.
+ 2 files changed, 206 insertions(+), 95 deletions(-)
+528ccff added mainmenu and naming page bg png.
+831e217 rename game.py file to main.py
+ 2 files changed, 95 insertions(+), 206 deletions(-)
+ff7c740 updated files
+ 7 files changed, 36 insertions(+), 17 deletions(-)
+488d754 finalize naming text input
+ 1 file changed, 31 insertions(+), 17 deletions(-)
+30653f9 added new file, clock.py
+ 1 file changed, 10 insertions(+)
+d61c24a edited gaming/naming file
+ 7 files changed, 3 insertions(+), 5 deletions(-)
+0a9c9ad added text input in naming.py
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+7c4c8b8 modified game file and states files.
+ 8 files changed, 41 insertions(+), 18 deletions(-)
+4fdb6d3 added start button png.
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+f5fd9ed added the start button.
+ 1 file changed, 21 insertions(+)
+543015c moved naming.py file to states folder.
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+11f1146 added a new file and folder
+ 5 files changed, 34 insertions(+), 51 deletions(-)
+1c84f95 modified game.py file
+ 2 files changed, 74 insertions(+), 58 deletions(-)
+34577df added a new text file, state.py
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+00cc2be initialise repository.
+ 12 files changed, 250 insertions(+)
