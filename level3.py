@@ -10,6 +10,10 @@ class Level3(State):
         self.game = game
         self.walls = []  # list to hold the walls
         self.grid_cell_size = 25
+
+        #coin sfx
+        self.coin_sound = pygame.mixer.Sound('audio/coin.mp3')
+        self.coin_sound.set_volume(0.2)
         
         self.data = {
             'coins': 0
@@ -95,7 +99,7 @@ class Level3(State):
         self.total_coins = len(self.coins)
         self.coin_image = pygame.image.load('images/coin_0.png')
 
-        self.time_limit = 20  
+        self.time_limit = 30  
         self.current_time = 0
         self.timer_font = pygame.font.Font(None, 36)
 
@@ -172,6 +176,7 @@ class Level3(State):
         # Check for collision with coins and collect them
         for coin in self.coins:
             if self.player.rect.colliderect(coin.rect):
+                self.coin_sound.play()
                 self.collected_coins += coin.collect()
                 self.data['coins'] += 1
                 self.save_collected_coins() # json

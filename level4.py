@@ -16,6 +16,10 @@ class Level4(State):
         }
 
         
+        #coin sfx
+        self.coin_sound = pygame.mixer.Sound('audio/coin.mp3')
+        self.coin_sound.set_volume(0.2)
+        
         # Load images with error handling
         try:
             self.heart_image = pygame.image.load('images/heart.png')
@@ -96,7 +100,7 @@ class Level4(State):
         self.total_coins = len(self.coins)
         self.coin_image = pygame.image.load('images/coin_0.png')
 
-        self.time_limit = 40
+        self.time_limit = 35
         self.current_time = 0
         self.timer_font = pygame.font.Font(None, 36)
 
@@ -174,6 +178,7 @@ class Level4(State):
         # Check for collision with coins and collect them
         for coin in self.coins:
             if self.player.rect.colliderect(coin.rect):
+                self.coin_sound.play()
                 self.collected_coins += coin.collect()
                 self.coins.remove(coin)
                 self.data['coins'] += 1
