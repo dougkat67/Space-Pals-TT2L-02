@@ -312,7 +312,7 @@ class Pet(State):
 
     def record_time(self): # save
         self.elapsed_time = (pygame.time.get_ticks() - self.start_time) / 1000
-        self.leaderboard.append({"time": self.elapsed_time})
+        self.leaderboard.append({"time": self.elapsed_time})  #name doesnt conect properly
         self.save_leaderboard()
         self.time_recorded = True
 
